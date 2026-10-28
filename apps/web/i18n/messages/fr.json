@@ -115,5 +115,37 @@
       "PAYMENT_FAILED": "Échec du paiement pour {reference}",
       "NEW_MESSAGE": "Nouveau message — {reference}"
     }
+  },
+  "catalogue": {
+    "title": "Nos voyages",
+    "subtitle": "Circuits, séjours, excursions, Omra et voyages d’affaires au départ de la Tunisie",
+    "results": "{count, plural, =0 {Aucun voyage trouvé} one {# voyage trouvé} other {# voyages trouvés}}",
+    "filters": "Filtres",
+    "showFilters": "Afficher les filtres",
+    "applyFilters": "Voir les résultats",
+    "reset": "Réinitialiser",
+    "category": "Type de voyage",
+    "destination": "Destination",
+    "price": "Budget par personne",
+    "duration": "Durée",
+    "durationValue": "{min} – {max} jours",
+    "priceMin": "Prix minimum",
+    "priceMax": "Prix maximum",
+    "durationMin": "Durée minimum",
+    "durationMax": "Durée maximum",
+    "search": "Rechercher",
+    "searchPlaceholder": "Djerba, Omra, Istanbul…",
+    "sort": "Trier par",
+    "sorts": {
+      "newest": "Recommandés",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant",
+      "duration_asc": "Durée croissante",
+      "duration_desc": "Durée décroissante"
+    },
+    "empty": "Aucun voyage ne correspond à vos critères.",
+    "emptyHint": "Essayez d’élargir votre budget ou de retirer un filtre.",
+    "pagination": "Pagination du catalogue",
+    "searchFor": "Départ le {date} · {travelers}"
   }
 }

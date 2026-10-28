@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { tr } from '@/lib/i18n';
 import { RatingStars } from './rating-stars';
 
-export function PackageCard({ pkg, priority = false }: { pkg: PackageSummary; priority?: boolean }) {
+export function PackageCard({ pkg, priority = false, linkQuery }: { pkg: PackageSummary; priority?: boolean; linkQuery?: string }) {
   const t = useTranslations('common');
   const tc = useTranslations('categories');
   const locale = useLocale();
@@ -35,7 +35,7 @@ export function PackageCard({ pkg, priority = false }: { pkg: PackageSummary; pr
           {tr(pkg.destination, 'name', locale)} · {pkg.destination.country}
         </p>
         <h3 className="font-serif text-lg font-semibold leading-snug">
-          <Link href={`/voyages/${pkg.slug}`} className="after:absolute after:inset-0 hover:text-primary focus-visible:outline-none">
+          <Link href={`/voyages/${pkg.slug}${linkQuery ? `?${linkQuery}` : ''}`} className="after:absolute after:inset-0 hover:text-primary focus-visible:outline-none">
             {title}
           </Link>
         </h3>

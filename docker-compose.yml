@@ -36,6 +36,9 @@ services:
       API_PORT: 4000
     expose:
       - "4000"
+    volumes:
+      # Fichiers téléversés depuis le back-office (servis sur /uploads), conservés entre redémarrages
+      - cls_uploads_data:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -109,6 +112,7 @@ services:
 volumes:
   cls_postgres_data:
   cls_redis_data:
+  cls_uploads_data:
 
 networks:
   cls_net:

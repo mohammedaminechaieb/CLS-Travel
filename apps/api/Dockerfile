@@ -25,6 +25,9 @@ ENV NODE_ENV=production \
     CHROMIUM_PATH=/usr/bin/chromium-browser
 WORKDIR /app
 COPY --from=build --chown=node:node /out ./
+# Fichiers téléversés (volume nommé cls_uploads_data) : le dossier appartient à node pour
+# que Docker initialise le volume avec ces droits
+RUN mkdir -p /app/uploads && chown node:node /app/uploads
 USER node
 EXPOSE 4000
 # Les migrations sont lancées par le pipeline de déploiement : `npx prisma migrate deploy`

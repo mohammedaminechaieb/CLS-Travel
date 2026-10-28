@@ -32,7 +32,6 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3",
     "@cls/shared": "workspace:^",
     "@nest-lab/throttler-storage-redis": "^1.2.0",
     "@nestjs/common": "^11",
@@ -42,6 +41,7 @@
     "@nestjs/jwt": "^11",
     "@nestjs/mapped-types": "^12.0.0",
     "@nestjs/platform-express": "^11",
+    "@nestjs/serve-static": "^5",
     "@nestjs/throttler": "^6",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",

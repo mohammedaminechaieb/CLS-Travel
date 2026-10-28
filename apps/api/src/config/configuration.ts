@@ -22,13 +22,4 @@ export default () => ({
   resend: {
     apiKey: process.env.RESEND_API_KEY ?? '',
   },
-  // Cloudflare R2 (API compatible S3)
-  r2: {
-    endpoint: process.env.R2_ENDPOINT ?? '',
-    bucket: process.env.R2_BUCKET ?? '',
-    accessKey: process.env.R2_ACCESS_KEY ?? '',
-    secretKey: process.env.R2_SECRET_KEY ?? '',
-    region: process.env.R2_REGION || 'auto',
-    publicUrl: process.env.R2_PUBLIC_URL ?? '',
-  },
 });

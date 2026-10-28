@@ -66,7 +66,7 @@ feat(ci-cd): github actions workflow — test + build + deploy
 | Auth | JWT access (15min) + refresh (7j) en HttpOnly cookie, haché en BDD |
 | Paiement | Aucun paiement en ligne pour l'instant (Stripe retiré, phase ultérieure) — règlement auprès du conseiller |
 | Emails | Resend (transactionnel) |
-| Storage | Cloudflare R2 (API S3, `@aws-sdk/client-s3`) |
+| Storage | Disque local du backend (`/app/uploads`, volume Docker `cls_uploads_data`), servi sur `https://api.carthagoloisirs.com/uploads/` |
 | Déploiement | Docker Compose + Nginx + Certbot Let's Encrypt |
 | CI/CD | GitHub Actions |
 
@@ -207,7 +207,7 @@ Implémentation : Guards NestJS + décorateur `@Roles()` sur chaque controller.
 6. **Validation** : `class-validator` + `class-transformer` sur tous les DTOs NestJS
 7. **CORS** : origines autorisées `carthagoloisirs.com` et `www.carthagoloisirs.com` uniquement
 8. **Audit logs** : toute action sensible loguée (login, paiement, modif rôle, suppression)
-9. **Backups** : pg_dump quotidien chiffré → Cloudflare R2 (`R2_BACKUP_BUCKET`), rétention 30j
+9. **Backups** : pg_dump quotidien chiffré → `/opt/cls-travel/backups/` sur le VPS, rétention 30j
 10. **Secrets** : variables `.env` uniquement, jamais en dur dans le code, `.env` dans `.gitignore`
 
 ---
@@ -281,15 +281,6 @@ JWT_REFRESH_EXPIRY=7d
 
 # Resend (expéditeur : noreply@carthagoloisirs.com, constante MAIL_FROM)
 RESEND_API_KEY=re_...
-
-# Cloudflare R2 (S3-compatible)
-R2_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
-R2_BUCKET=cls-travel-media
-R2_ACCESS_KEY=
-R2_SECRET_KEY=
-R2_REGION=auto
-R2_PUBLIC_URL=
-R2_BACKUP_BUCKET=cls-travel-backups
 
 # Google Maps
 NEXT_PUBLIC_GMAPS_KEY=...
@@ -374,4 +365,6 @@ pnpm build                                     # shared → api → web (standal
 - **PDF** : Puppeteer (`puppeteer-core`) + Chromium système (`CHROMIUM_PATH`).
 - **CI/CD** : `.github/workflows/deploy.yml` (tests → images ghcr.io → SSH → `prisma migrate deploy`
   → health check avec rollback). Secrets : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_SSH_KNOWN_HOSTS`.
-- **Sauvegardes** : `infra/backup/backup.sh` (cron quotidien sur le VPS).
+- **Fichiers téléversés** : `media/media.service.ts` écrit dans `UPLOAD_DIR` (`/app/uploads` dans le conteneur),
+  `ServeStaticModule` les sert sur `/uploads` ; URL publique = `${API_URL}/uploads/<fichier>`.
+- **Sauvegardes** : `infra/backup/backup.sh` (cron quotidien sur le VPS) → `/opt/cls-travel/backups/` (chiffré, 30 j).

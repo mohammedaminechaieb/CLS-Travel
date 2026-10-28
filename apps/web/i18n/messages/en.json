@@ -665,7 +665,7 @@
         },
         {
           "title": "Hosting",
-          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Media files and encrypted backups are stored on Cloudflare R2 (Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA)."
+          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Media files and encrypted backups are stored on the same server."
         },
         {
           "title": "Intellectual property",
@@ -691,7 +691,7 @@
         },
         {
           "title": "Recipients",
-          "body": "Our authorised advisors, our travel partners (airlines, hotels, ground handlers) strictly as needed, and our technical processors (OVHcloud for hosting, Cloudflare R2 for media and backup storage, Resend for emails)."
+          "body": "Our authorised advisors, our travel partners (airlines, hotels, ground handlers) strictly as needed, and our technical processors (OVHcloud for hosting, Resend for emails)."
         },
         {
           "title": "Retention period",

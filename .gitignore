@@ -25,3 +25,7 @@ infra/certbot/www/
 .idea/
 .vscode/
 dump.rdb
+
+# fichiers téléversés en local (apps/api/uploads) et sauvegardes
+apps/api/uploads/
+backups/

@@ -547,6 +547,168 @@
       "undo": "Annuler",
       "redo": "Rétablir",
       "toolbar": "Mise en forme"
+    },
+    "blog": {
+      "title": "Articles du blog",
+      "new": "Nouvel article",
+      "edit": "Modifier l’article",
+      "titleFr": "Titre (FR)",
+      "titleAr": "Titre (AR)",
+      "titleEn": "Titre (EN)",
+      "excerptFr": "Chapô (FR)",
+      "excerptAr": "Chapô (AR)",
+      "excerptEn": "Chapô (EN)",
+      "body": "Contenu de l’article",
+      "tags": "Tags (séparés par des virgules)",
+      "cover": "Image de couverture",
+      "statusLabels": {
+        "draft": "Brouillon",
+        "published": "Publié"
+      },
+      "publishedAt": "Publié le"
+    }
+  },
+  "blog": {
+    "title": "Le blog voyage",
+    "subtitle": "Conseils, inspirations et guides pratiques par nos experts",
+    "allTags": "Tous les articles",
+    "tagsLabel": "Filtrer par thème",
+    "readingTime": "{count} min de lecture",
+    "by": "Par {name}",
+    "publishedOn": "Publié le {date}",
+    "related": "À lire aussi",
+    "empty": "Aucun article pour ce thème pour le moment.",
+    "readMore": "Lire l’article",
+    "backToBlog": "Tous les articles",
+    "share": "Partager"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Une question, un devis, un voyage de groupe ? Nos conseillers vous répondent sous 24 h ouvrées.",
+    "name": "Nom complet",
+    "email": "Email",
+    "phone": "Téléphone (facultatif)",
+    "subject": "Sujet",
+    "subjects": {
+      "information": "Demande d’information",
+      "devis": "Demande de devis",
+      "groupe": "Voyage de groupe / séminaire",
+      "omra": "Omra & Hajj",
+      "reclamation": "Réclamation",
+      "autre": "Autre"
+    },
+    "message": "Votre message",
+    "send": "Envoyer le message",
+    "sent": "Merci ! Votre message a bien été envoyé.",
+    "error": "Envoi impossible pour le moment. Réessayez ou appelez-nous.",
+    "agency": "Notre agence",
+    "hours": "Horaires",
+    "hoursValue": "Lun – Ven : 8h30 – 18h00 · Sam : 9h00 – 13h00",
+    "call": "Appelez-nous",
+    "write": "Écrivez-nous",
+    "mapTitle": "Plan d’accès à l’agence CLS Travel",
+    "consent": "Vos données sont utilisées uniquement pour répondre à votre demande (voir notre politique de confidentialité)."
+  },
+  "legal": {
+    "updated": "Dernière mise à jour : {date}",
+    "toc": "Sommaire",
+    "cgv": {
+      "title": "Conditions générales de vente",
+      "intro": "Les présentes conditions régissent la vente de voyages et de séjours par CLS Travel (Carthago Loisirs), agence de voyage agréée, conformément à la loi tunisienne n° 73-21 relative aux agences de voyages et au Code des obligations et des contrats.",
+      "sections": [
+        {
+          "title": "1. Réservation",
+          "body": "Toute réservation effectuée sur carthagoloisirs.com nécessite la création d’un compte client et l’acceptation des présentes conditions. La réservation est enregistrée dès la validation du récapitulatif et devient ferme après le règlement de l’acompte."
+        },
+        {
+          "title": "2. Prix",
+          "body": "Les prix sont exprimés en dinars tunisiens (TND), par personne, toutes taxes comprises. Ils comprennent les prestations listées dans la rubrique « Ce prix comprend » de chaque offre. Les paiements par carte peuvent être débités dans une autre devise (EUR) au taux indiqué avant validation."
+        },
+        {
+          "title": "3. Modalités de paiement",
+          "body": "Un acompte de 30 % du montant total est exigé à la réservation. Le solde doit être réglé au plus tard 30 jours avant la date de départ. Pour toute réservation effectuée moins de 30 jours avant le départ, la totalité du prix est exigible immédiatement. Les paiements en ligne sont traités par Stripe : CLS Travel ne conserve aucune donnée bancaire."
+        },
+        {
+          "title": "4. Annulation par le client",
+          "body": "Toute annulation doit être notifiée par écrit (messagerie de l’espace client ou email). Frais retenus : plus de 30 jours avant le départ, 10 % du prix total ; de 30 à 15 jours, 30 % ; de 14 à 7 jours, 50 % ; moins de 7 jours ou non-présentation, 100 %. Les frais de visa et billets d’avion non remboursables restent dus."
+        },
+        {
+          "title": "5. Modification ou annulation par l’agence",
+          "body": "CLS Travel peut être amenée à modifier un élément essentiel du voyage ou à l’annuler (nombre minimum de participants non atteint, force majeure, sécurité). Le client est alors informé sans délai et peut accepter la modification ou obtenir le remboursement intégral des sommes versées."
+        },
+        {
+          "title": "6. Formalités",
+          "body": "Chaque voyageur est responsable de la validité de ses documents (passeport valide au moins 6 mois après le retour, visas, vaccinations). Les informations communiquées lors de la réservation doivent correspondre exactement au passeport."
+        },
+        {
+          "title": "7. Responsabilité et assurance",
+          "body": "CLS Travel est responsable de la bonne exécution des prestations prévues au contrat. Une assurance assistance-rapatriement et annulation est vivement recommandée et peut être souscrite sur demande."
+        },
+        {
+          "title": "8. Réclamations et litiges",
+          "body": "Toute réclamation doit être adressée dans les 30 jours suivant le retour. À défaut d’accord amiable, les tribunaux de Tunis sont seuls compétents et le droit tunisien est applicable."
+        }
+      ]
+    },
+    "notice": {
+      "title": "Mentions légales",
+      "intro": "Conformément à la réglementation en vigueur, voici les informations relatives à l’éditeur et à l’hébergeur du site carthagoloisirs.com.",
+      "sections": [
+        {
+          "title": "Éditeur",
+          "body": "CLS Travel — Carthago Loisirs SARL, agence de voyage agréée par l’Office National du Tourisme Tunisien. Siège : Avenue Habib Bourguiba, 1000 Tunis, Tunisie. Téléphone : +216 71 000 000. Email : contact@carthagoloisirs.com. Registre du commerce et matricule fiscal : communiqués sur demande."
+        },
+        {
+          "title": "Directeur de la publication",
+          "body": "Le gérant de Carthago Loisirs SARL."
+        },
+        {
+          "title": "Hébergement",
+          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Les médias sont stockés sur OVHcloud Object Storage (région Gravelines)."
+        },
+        {
+          "title": "Propriété intellectuelle",
+          "body": "L’ensemble des contenus du site (textes, photographies, logos, programmes) est protégé. Toute reproduction sans autorisation écrite préalable est interdite."
+        },
+        {
+          "title": "Paiement",
+          "body": "Les paiements en ligne sont opérés par Stripe Payments Europe Ltd. Aucune donnée de carte bancaire n’est stockée par CLS Travel."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "CLS Travel attache une grande importance à la protection de vos données personnelles, conformément à la loi organique tunisienne n° 2004-63 et, pour nos clients européens, au RGPD.",
+      "sections": [
+        {
+          "title": "Données collectées",
+          "body": "Identité et coordonnées (nom, prénom, email, téléphone), informations des voyageurs nécessaires à la réservation (passeport, date de naissance), historique des réservations et paiements, échanges avec nos conseillers. Les données de carte bancaire sont saisies directement chez Stripe et ne nous sont jamais transmises."
+        },
+        {
+          "title": "Finalités",
+          "body": "Gestion de votre compte et de vos réservations, émission des billets, visas et documents de voyage, facturation, service client, obligations légales et comptables, et — avec votre accord — envoi de la newsletter."
+        },
+        {
+          "title": "Destinataires",
+          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Stripe pour le paiement, SendGrid pour les emails)."
+        },
+        {
+          "title": "Durée de conservation",
+          "body": "Les données de compte sont conservées tant que le compte est actif. Les pièces comptables sont conservées 10 ans. Les sauvegardes chiffrées de la base sont conservées 30 jours."
+        },
+        {
+          "title": "Sécurité",
+          "body": "Connexion chiffrée (HTTPS/HSTS), mots de passe hachés (bcrypt), sessions à durée limitée, journalisation des accès sensibles et sauvegardes quotidiennes chiffrées."
+        },
+        {
+          "title": "Vos droits",
+          "body": "Vous disposez d’un droit d’accès, de rectification, d’opposition et de suppression. Écrivez à contact@carthagoloisirs.com. La suppression d’un compte entraîne son anonymisation : les réservations sont conservées pour nos obligations comptables."
+        },
+        {
+          "title": "Cookies",
+          "body": "Le site utilise uniquement des cookies techniques indispensables : session de connexion (HttpOnly) et préférence de langue. Aucun cookie publicitaire n’est déposé."
+        }
+      ]
     }
   }
 }

@@ -13,6 +13,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import configuration from './config/configuration';
 import { validateEnv } from './config/env.validation';
+import { ContactModule } from './contact/contact.module';
 import { DestinationsModule } from './destinations/destinations.module';
 import { DocumentsModule } from './documents/documents.module';
 import { HealthController } from './health/health.controller';
@@ -63,6 +64,7 @@ import { UsersModule } from './users/users.module';
     NewsletterModule,
     DocumentsModule,
     MediaModule,
+    ContactModule,
   ],
   controllers: [HealthController],
   providers: [

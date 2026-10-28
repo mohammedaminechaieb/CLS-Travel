@@ -352,3 +352,30 @@ Nginx route :
 18. i18n next-intl FR/AR/EN + RTL arabe
 19. Optimisation performance + SEO (metadata, sitemap, og:image)
 20. GitHub Actions CI/CD (test → build → push → deploy SSH)
+
+---
+
+## 13. Commandes et exploitation (état actuel du dépôt)
+
+```bash
+pnpm install                                   # installe tout le monorepo (pnpm 9)
+docker compose -f docker-compose.dev.yml up -d # Postgres 16 + Redis 7 en local
+pnpm --filter @cls/shared build                # à refaire après modification de packages/shared
+pnpm --filter @cls/api prisma:migrate          # nouvelle migration (dev)
+SEED_DEMO=true pnpm --filter @cls/api prisma:seed  # destinations + admin (+ données de démo)
+pnpm dev                                       # API :4000 + web :3000
+pnpm -r typecheck && pnpm --filter @cls/web lint && pnpm --filter @cls/api test
+pnpm build                                     # shared → api → web (standalone)
+```
+
+- **i18n** : locale par cookie `NEXT_LOCALE` puis `Accept-Language` (pas de préfixe d'URL).
+  Toute chaîne UI va dans `apps/web/i18n/messages/{fr,ar,en}.json` (mêmes clés partout).
+- **Auth front** : access token en mémoire (`useAuth().request`), refresh via cookie HttpOnly `cls_rt` (path `/auth`).
+- **Événements** : les modules métier émettent des événements (`common/events`), le module
+  notifications envoie in-app + SendGrid. Ne pas appeler le mail directement depuis un service métier.
+- **Paiements** : montants calculés côté API en TND (`payments/payment-amounts.ts`), débités en
+  `STRIPE_CURRENCY` ; `payments.amount_tnd` est la valeur comptable.
+- **PDF** : Puppeteer (`puppeteer-core`) + Chromium système (`CHROMIUM_PATH`).
+- **CI/CD** : `.github/workflows/deploy.yml` (tests → images ghcr.io → SSH → `prisma migrate deploy`
+  → health check avec rollback). Secrets : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_SSH_KNOWN_HOSTS`.
+- **Sauvegardes** : `infra/backup/backup.sh` (cron quotidien sur le VPS).

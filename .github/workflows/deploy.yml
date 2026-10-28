@@ -1,0 +1,206 @@
+# CLS Travel — CI/CD
+#   push sur main : tests → images Docker → ghcr.io → déploiement SSH sur le VPS OVH
+#                   → migrations Prisma → health check (rollback automatique si KO)
+#   pull request  : tests uniquement
+#
+# Secrets requis : VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_SSH_KNOWN_HOSTS (sortie de `ssh-keyscan`)
+# Variables (vars) : NEXT_PUBLIC_API_URL, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_GMAPS_KEY,
+#                    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, VPS_APP_DIR (défaut /opt/cls-travel)
+name: CI / Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9.15.0'
+  REGISTRY: ghcr.io
+
+jobs:
+  test:
+    name: Lint, typecheck & tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: clsuser
+          POSTGRES_PASSWORD: clspassword
+          POSTGRES_DB: cls_travel_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U clsuser -d cls_travel_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://clsuser:clspassword@localhost:5432/cls_travel_test
+      REDIS_URL: redis://localhost:6379
+      JWT_ACCESS_SECRET: ci-access-secret-ci-access-secret-ci-access-secret-0001
+      JWT_REFRESH_SECRET: ci-refresh-secret-ci-refresh-secret-ci-refresh-secret-01
+      ADMIN_EMAIL: admin@ci.local
+      ADMIN_PASSWORD: CiPassw0rd!
+      NEXT_PUBLIC_SITE_URL: https://carthagoloisirs.com
+      NEXT_PUBLIC_API_URL: https://api.carthagoloisirs.com
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @cls/shared build
+
+      - name: Prisma — generate client, apply migrations, seed
+        working-directory: apps/api
+        run: |
+          pnpm exec prisma generate
+          pnpm exec prisma migrate deploy
+          SEED_DEMO=true pnpm exec prisma db seed
+
+      - name: Typecheck
+        run: pnpm -r --if-present typecheck
+
+      - name: Lint (web)
+        run: pnpm --filter @cls/web lint
+
+      - name: Unit tests (api)
+        run: pnpm --filter @cls/api test -- --ci
+
+      - name: Build API
+        run: pnpm --filter @cls/api build
+
+      - name: API smoke test
+        working-directory: apps/api
+        run: |
+          node dist/main.js > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://localhost:4000/health && break; sleep 1; done
+          curl -fsS "http://localhost:4000/packages?limit=1" | grep -q '"total"'
+          curl -fsS -o /dev/null -w '%{http_code}' http://localhost:4000/admin/users | grep -q 401 || (echo "RBAC check failed" && exit 1)
+          kill %1
+
+      - name: Build web
+        run: pnpm --filter @cls/web build
+
+  build:
+    name: Build & push images
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - app: api
+            dockerfile: apps/api/Dockerfile
+          - app: web
+            dockerfile: apps/web/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Image name (lowercase)
+        id: image
+        run: echo "name=${REGISTRY}/${GITHUB_REPOSITORY,,}/${{ matrix.app }}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=sha,format=long,prefix=
+            type=raw,value=latest
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api.carthagoloisirs.com' }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL || 'https://carthagoloisirs.com' }}
+            NEXT_PUBLIC_GMAPS_KEY=${{ vars.NEXT_PUBLIC_GMAPS_KEY }}
+            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ vars.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+
+  deploy:
+    name: Deploy to OVH VPS
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: https://carthagoloisirs.com
+    env:
+      APP_DIR: ${{ vars.VPS_APP_DIR || '/opt/cls-travel' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          echo "${{ secrets.VPS_SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
+
+      - name: Upload compose & infra files
+        run: |
+          rsync -az --delete-after -e "ssh -i ~/.ssh/id_deploy" \
+            --exclude 'certbot/conf' --exclude 'certbot/www' \
+            docker-compose.yml infra \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${APP_DIR}/"
+
+      - name: Pull images, migrate, restart, health check
+        run: |
+          ssh -i ~/.ssh/id_deploy "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "APP_DIR='${APP_DIR}' IMAGE_TAG='${GITHUB_SHA}' GHCR_IMAGE_PREFIX='${REGISTRY}/${GITHUB_REPOSITORY,,}' \
+             GHCR_USER='${{ github.actor }}' GHCR_TOKEN='${{ secrets.GITHUB_TOKEN }}' bash -s" < infra/deploy/remote-deploy.sh
+
+      - name: Public health check
+        run: |
+          for i in $(seq 1 20); do
+            api=$(curl -s -o /dev/null -w '%{http_code}' https://api.carthagoloisirs.com/health || true)
+            web=$(curl -s -o /dev/null -w '%{http_code}' https://carthagoloisirs.com/ || true)
+            echo "api=$api web=$web"
+            [ "$api" = "200" ] && [ "$web" = "200" ] && exit 0
+            sleep 6
+          done
+          echo "::error::Health check failed after deployment"
+          exit 1

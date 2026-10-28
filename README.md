@@ -19,12 +19,26 @@ pnpm --filter @cls/shared build
 pnpm dev
 ```
 
-## Production
+## Production (VPS OVHcloud)
 
 ```bash
+# Première installation sur le VPS (Ubuntu 24.04 + Docker)
+git clone https://github.com/<owner>/CLS-Travel.git /opt/cls-travel && cd /opt/cls-travel
 cp .env.example .env    # remplir tous les secrets
-./infra/certbot/init-letsencrypt.sh
+CERTBOT_EMAIL=admin@carthagoloisirs.com ./infra/certbot/init-letsencrypt.sh
 docker compose up -d
+docker compose run --rm backend npx prisma migrate deploy
+docker compose run --rm backend npx prisma db seed   # destinations + super admin
+# Sauvegarde quotidienne chiffrée
+echo "15 3 * * * /opt/cls-travel/infra/backup/backup.sh >> /var/log/cls-backup.log 2>&1" | crontab -
 ```
+
+Ensuite, chaque push sur `main` déclenche `.github/workflows/deploy.yml` :
+tests → images `ghcr.io/<owner>/cls-travel/{api,web}` → déploiement SSH → migrations → health check
+(rollback automatique vers l'image précédente en cas d'échec).
+
+Secrets GitHub : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_SSH_KNOWN_HOSTS`.
+Variables GitHub : `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GMAPS_KEY`,
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `VPS_APP_DIR`.
 
 Voir `CLAUDE.md` pour les conventions, le schéma de données et les règles de sécurité.

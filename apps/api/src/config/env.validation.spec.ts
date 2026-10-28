@@ -24,3 +24,22 @@ describe('validateEnv', () => {
     expect(() => validateEnv({ ...prod, API_URL: 'http://localhost:4000' })).toThrow(/API_URL/);
   });
 });
+
+describe('validateEnv — Render', () => {
+  const prod = {
+    DATABASE_URL: 'postgresql://u:p@host:5432/db',
+    JWT_ACCESS_SECRET: 'a'.repeat(64),
+    JWT_REFRESH_SECRET: 'b'.repeat(64),
+    NODE_ENV: 'production',
+    RESEND_API_KEY: 're_123',
+  };
+
+  it('accepts RENDER_EXTERNAL_URL instead of API_URL', () => {
+    expect(() => validateEnv({ ...prod, RENDER_EXTERNAL_URL: 'https://cls-travel-api.onrender.com' })).not.toThrow();
+  });
+
+  it('does not require COOKIE_DOMAIN and validates COOKIE_SAMESITE', () => {
+    expect(() => validateEnv({ ...prod, API_URL: 'https://x.onrender.com', COOKIE_SAMESITE: 'none' })).not.toThrow();
+    expect(() => validateEnv({ ...prod, API_URL: 'https://x.onrender.com', COOKIE_SAMESITE: 'loose' })).toThrow(/COOKIE_SAMESITE/);
+  });
+});

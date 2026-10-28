@@ -6,10 +6,13 @@ const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 export function refreshCookieOptions(config: ConfigService): CookieOptions {
   const isProd = config.get('nodeEnv') === 'production';
+  // lax : www.carthagoloisirs.com ↔ api.carthagoloisirs.com = même site.
+  // none : front et API sur des sites distincts (onrender.com est un suffixe public) — exige Secure.
+  const sameSite = config.get<'lax' | 'strict' | 'none'>('cookieSameSite') ?? 'lax';
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: 'lax', // www.carthagoloisirs.com ↔ api.carthagoloisirs.com = même site
+    secure: isProd || sameSite === 'none',
+    sameSite,
     domain: isProd ? config.get<string>('cookieDomain') : undefined,
     path: '/auth',
     maxAge: SEVEN_DAYS_MS,

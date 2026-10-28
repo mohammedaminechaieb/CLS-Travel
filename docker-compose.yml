@@ -1,4 +1,4 @@
-# Production — 5 services : frontend, backend, postgres, redis, nginx
+# Production VPS (alternative à Render) — 4 services : frontend, backend, postgres, nginx
 name: cls-travel
 
 services:
@@ -42,8 +42,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4000/health"]
       interval: 15s
@@ -70,20 +68,6 @@ services:
       retries: 10
     networks: [cls_net]
 
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
-    ports:
-      - "127.0.0.1:6379:6379"
-    volumes:
-      - cls_redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-    networks: [cls_net]
 
   nginx:
     image: nginx:alpine
@@ -111,7 +95,6 @@ services:
 
 volumes:
   cls_postgres_data:
-  cls_redis_data:
   cls_uploads_data:
 
 networks:

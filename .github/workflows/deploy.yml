@@ -43,14 +43,9 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U clsuser -d cls_travel_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
-      redis:
-        image: redis:7-alpine
-        ports: ['6379:6379']
-        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 10
     env:
       NODE_ENV: test
       DATABASE_URL: postgresql://clsuser:clspassword@localhost:5432/cls_travel_test
-      REDIS_URL: redis://localhost:6379
       JWT_ACCESS_SECRET: ci-access-secret-ci-access-secret-ci-access-secret-0001
       JWT_REFRESH_SECRET: ci-refresh-secret-ci-refresh-secret-ci-refresh-secret-01
       ADMIN_EMAIL: admin@ci.local
@@ -110,7 +105,8 @@ jobs:
   build:
     name: Build & push images
     needs: test
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # VPS Docker : uniquement sur lancement manuel (Render déploie main automatiquement)
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

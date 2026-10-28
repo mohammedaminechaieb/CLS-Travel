@@ -1,8 +1,7 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { BookingStatus } from '@prisma/client';
-import type Redis from 'ioredis';
 import { PrismaService } from '../prisma/prisma.service';
-import { REDIS } from '../redis/redis.module';
+import { MemoryStore } from '../cache/memory-store';
 import { resolveRange, type Period, type RangeQueryDto } from './analytics.dto';
 
 const CACHE_TTL_SECONDS = 60;
@@ -13,7 +12,7 @@ const pct = (num: number, den: number) => (den === 0 ? 0 : round((num / den) * 1
 export class AnalyticsService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(REDIS) private readonly redis: Redis,
+    private readonly store: MemoryStore,
   ) {}
 
   /** Chiffre d'affaires encaissé (paiements réussis, contre-valeur TND) par période. */
@@ -160,17 +159,13 @@ export class AnalyticsService {
     return r;
   }
 
-  /** Cache Redis court : les tableaux de bord sont consultés souvent mais tolèrent 60 s de retard. */
+  /** Cache mémoire court : les tableaux de bord sont consultés souvent mais tolèrent 60 s de retard. */
   private async cached<T>(key: string, compute: () => Promise<T>): Promise<T> {
     const fullKey = `analytics:${key}`;
-    try {
-      const hit = await this.redis.get(fullKey);
-      if (hit) return JSON.parse(hit) as T;
-    } catch {
-      /* Redis indisponible : on calcule directement */
-    }
+    const hit = this.store.get(fullKey);
+    if (hit) return JSON.parse(hit) as T;
     const value = await compute();
-    this.redis.set(fullKey, JSON.stringify(value), 'EX', CACHE_TTL_SECONDS).catch(() => undefined);
+    this.store.set(fullKey, JSON.stringify(value), CACHE_TTL_SECONDS);
     return value;
   }
 }

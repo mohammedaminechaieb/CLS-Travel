@@ -42,6 +42,8 @@ export class MediaService implements OnModuleInit {
   }
 
   /**
+   * ⚠ Sur Render free tier, le disque est éphémère : ces fichiers disparaissent au redéploiement.
+   *
    * Enregistre une image sur le disque du backend et renvoie son URL publique
    * (`${API_URL}/uploads/<fichier>`, ex. https://api.carthagoloisirs.com/uploads/…).
    */

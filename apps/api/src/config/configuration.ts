@@ -26,10 +26,8 @@ export default () => ({
     currency: (process.env.STRIPE_CURRENCY ?? 'eur').toLowerCase(),
     tndExchangeRate: parseFloat(process.env.STRIPE_TND_EXCHANGE_RATE ?? '0.30'),
   },
-  sendgrid: {
-    apiKey: process.env.SENDGRID_API_KEY ?? '',
-    fromEmail: process.env.SENDGRID_FROM_EMAIL ?? 'noreply@carthagoloisirs.com',
-    fromName: process.env.SENDGRID_FROM_NAME ?? 'CLS Travel',
+  resend: {
+    apiKey: process.env.RESEND_API_KEY ?? '',
   },
   s3: {
     endpoint: process.env.OVH_S3_ENDPOINT ?? '',

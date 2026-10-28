@@ -706,7 +706,7 @@
         },
         {
           "title": "Recipients",
-          "body": "Our authorised advisors, our travel partners (airlines, hotels, ground handlers) strictly as needed, and our technical processors (OVHcloud for hosting, Stripe for payment, SendGrid for emails)."
+          "body": "Our authorised advisors, our travel partners (airlines, hotels, ground handlers) strictly as needed, and our technical processors (OVHcloud for hosting, Stripe for payment, Resend for emails)."
         },
         {
           "title": "Retention period",

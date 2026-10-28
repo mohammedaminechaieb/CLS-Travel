@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 
 export interface MailMessage {
   to: string;
@@ -10,37 +10,42 @@ export interface MailMessage {
   attachments?: { content: string; filename: string; type: string }[];
 }
 
-/** Envoi transactionnel via SendGrid. Sans clé API (dev), le message est journalisé. */
+/** Expéditeur des emails transactionnels (domaine vérifié dans Resend). */
+export const MAIL_FROM = 'CLS Travel <noreply@carthagoloisirs.com>';
+/** Adresse de l'agence utilisée par défaut comme destinataire interne. */
+export const AGENCY_EMAIL = 'noreply@carthagoloisirs.com';
+
+/** Envoi transactionnel via Resend. Sans clé API (dev), le message est journalisé. */
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private readonly enabled: boolean;
+  private readonly resend: Resend | null;
 
-  constructor(private readonly config: ConfigService) {
-    const apiKey = config.get<string>('sendgrid.apiKey');
-    this.enabled = Boolean(apiKey && apiKey.startsWith('SG.'));
-    if (this.enabled) sgMail.setApiKey(apiKey!);
+  constructor(config: ConfigService) {
+    const apiKey = config.get<string>('resend.apiKey');
+    this.resend = apiKey && apiKey.startsWith('re_') ? new Resend(apiKey) : null;
   }
 
   async send(message: MailMessage): Promise<void> {
-    if (!this.enabled) {
+    if (!this.resend) {
       this.logger.log(`[mail:dev] → ${message.to} | ${message.subject}\n${message.text ?? ''}`);
       return;
     }
     try {
-      await sgMail.send({
+      // Le SDK Resend ne lève pas d'exception : il renvoie { data, error }
+      const { error } = await this.resend.emails.send({
+        from: MAIL_FROM,
         to: message.to,
-        from: {
-          email: this.config.get<string>('sendgrid.fromEmail')!,
-          name: this.config.get<string>('sendgrid.fromName'),
-        },
         subject: message.subject,
         html: message.html,
-        text: message.text,
-        attachments: message.attachments?.map((a) => ({ ...a, disposition: 'attachment' })),
+        ...(message.text && { text: message.text }),
+        ...(message.attachments?.length && {
+          attachments: message.attachments.map((a) => ({ filename: a.filename, content: a.content, contentType: a.type })),
+        }),
       });
+      if (error) this.logger.error(`Resend error to ${message.to}: ${error.name} — ${error.message}`);
     } catch (err) {
-      this.logger.error(`SendGrid error to ${message.to}: ${(err as Error).message}`);
+      this.logger.error(`Resend error to ${message.to}: ${(err as Error).message}`);
     }
   }
 }

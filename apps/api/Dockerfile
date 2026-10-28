@@ -1,5 +1,4 @@
 # syntax=docker/dockerfile:1.7
-# ---- base ----
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat openssl && corepack enable && corepack prepare pnpm@9.15.0 --activate
 WORKDIR /repo
@@ -13,12 +12,10 @@ RUN pnpm install --frozen-lockfile --filter @cls/api... --ignore-scripts
 COPY packages/shared packages/shared
 COPY apps/api apps/api
 RUN pnpm --filter @cls/shared build \
- && (cd apps/api && ([ ! -f prisma/schema.prisma ] || pnpm exec prisma generate)) \
+ && pnpm --filter @cls/api exec prisma generate \
  && pnpm --filter @cls/api build \
- && pnpm deploy --filter @cls/api --prod /out \
- && cp -r apps/api/dist /out/dist \
- && ([ ! -d apps/api/prisma ] || cp -r apps/api/prisma /out/prisma) \
- && (cd /out && ([ ! -f prisma/schema.prisma ] || npx --yes prisma@6 generate))
+ && pnpm deploy --filter @cls/api --prod --ignore-scripts /out \
+ && cd /out && npx prisma generate
 
 # ---- runtime ----
 FROM node:20-alpine AS runtime
@@ -28,4 +25,5 @@ WORKDIR /app
 COPY --from=build --chown=node:node /out ./
 USER node
 EXPOSE 4000
+# Les migrations sont lancées par le pipeline de déploiement : `npx prisma migrate deploy`
 CMD ["node", "dist/main.js"]

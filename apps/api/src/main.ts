@@ -23,7 +23,8 @@ async function bootstrap() {
       frameguard: { action: 'deny' },
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
       hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-      crossOriginResourcePolicy: { policy: 'same-site' },
+      // cross-origin : les images /uploads doivent pouvoir être affichées par le front, même sur un autre site
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
     }),
   );
   app.use(cookieParser());

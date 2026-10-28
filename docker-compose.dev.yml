@@ -1,4 +1,4 @@
-# Développement local — uniquement les dépendances (Postgres + Redis).
+# Développement local — uniquement les dépendances (Postgres).
 # Lancer ensuite `pnpm dev` à la racine (API sur :4000, web sur :3000).
 name: cls-travel-dev
 
@@ -19,13 +19,6 @@ services:
       timeout: 5s
       retries: 10
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - cls_redis_dev_data:/data
 
 volumes:
   cls_postgres_dev_data:
-  cls_redis_dev_data:

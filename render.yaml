@@ -1,0 +1,99 @@
+# Render Blueprint — CLS Travel (offre gratuite)
+# Déploiement : Render Dashboard → New → Blueprint → ce dépôt. Chaque push sur main redéploie.
+#
+# ⚠ Limites de l'offre gratuite :
+#  - les services web se mettent en veille après 15 min d'inactivité (≈ 1 min de réveil) ;
+#  - le disque est éphémère : les fichiers téléversés (/uploads) sont perdus à chaque redéploiement ;
+#  - la base PostgreSQL gratuite expire 30 jours après sa création (sauvegarder / passer en payant).
+#
+# Les URL *.onrender.com ci-dessous supposent que Render attribue exactement ces noms de service.
+# Si Render ajoute un suffixe (ex. cls-travel-api-x1y2.onrender.com), mettez à jour les variables
+# marquées « URL » dans le Dashboard puis redéployez le front (NEXT_PUBLIC_* est figé au build).
+
+databases:
+  - name: cls-travel-db
+    plan: free
+    region: frankfurt
+    databaseName: cls_travel
+    user: clsuser
+    postgresMajorVersion: "16"
+
+services:
+  # ---------------- API NestJS (Docker : Chromium inclus pour les PDF Puppeteer) ----------------
+  - type: web
+    name: cls-travel-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    # Pas de pre-deploy command en offre gratuite : migrations appliquées au démarrage
+    dockerCommand: sh -c "npx prisma migrate deploy && node dist/main.js"
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Fournie par la base Render ; Prisma lit directement DATABASE_URL
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cls-travel-db
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRY
+        value: 15m
+      - key: JWT_REFRESH_EXPIRY
+        value: 7d
+      # URL — front Render (CORS, liens dans les emails)
+      - key: APP_URL
+        value: https://cls-travel-web.onrender.com
+      - key: CORS_ORIGINS
+        value: https://cls-travel-web.onrender.com
+      # Front et API sur deux sous-domaines onrender.com = sites différents → cookie refresh SameSite=None
+      - key: COOKIE_SAMESITE
+        value: none
+      # API_URL est facultative : RENDER_EXTERNAL_URL (fourni par Render) sert d'URL publique de l'API
+      # Obligatoire en production (emails transactionnels)
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_EMAIL
+        sync: false
+      # Compte super admin créé par le seed (à lancer une fois, voir README)
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+  # ---------------- Front Next.js (runtime Node natif, sortie standalone) ----------------
+  - type: web
+    name: cls-travel-web
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: >-
+      npx --yes pnpm@9.15.0 install --frozen-lockfile --filter @cls/web... &&
+      npx --yes pnpm@9.15.0 --filter @cls/shared build &&
+      npx --yes pnpm@9.15.0 --filter @cls/web build &&
+      cp -r apps/web/.next/static apps/web/.next/standalone/apps/web/.next/static &&
+      cp -r apps/web/public apps/web/.next/standalone/apps/web/public
+    startCommand: HOSTNAME=0.0.0.0 node apps/web/.next/standalone/apps/web/server.js
+    healthCheckPath: /robots.txt
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      # URL — API Render (navigateur + rendu serveur). Figées au build : redéployer après modification
+      - key: NEXT_PUBLIC_API_URL
+        value: https://cls-travel-api.onrender.com
+      - key: INTERNAL_API_URL
+        value: https://cls-travel-api.onrender.com
+      # URL — ce service (metadata, sitemap, robots : indexation bloquée hors carthagoloisirs.com)
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://cls-travel-web.onrender.com
+      - key: NEXT_PUBLIC_GMAPS_KEY
+        sync: false

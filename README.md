@@ -5,21 +5,39 @@ Plateforme web de l'agence de voyage tunisienne **CLS Travel** (Carthago Loisirs
 | App | Stack | Port |
 |-----|-------|------|
 | `apps/web` | Next.js 15 (App Router), Tailwind CSS 3, shadcn/ui, TanStack Query v5, next-intl | 3000 |
-| `apps/api` | NestJS 11, Prisma 6, PostgreSQL 16, Redis 7 | 4000 |
+| `apps/api` | NestJS 11, Prisma 6, PostgreSQL 16 | 4000 |
 | `packages/shared` | Types, enums et constantes partagés | — |
 
 ## Démarrage local
 
 ```bash
 pnpm install
-docker compose -f docker-compose.dev.yml up -d       # Postgres + Redis
+docker compose -f docker-compose.dev.yml up -d       # Postgres
 cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env.local
 pnpm --filter @cls/shared build
 pnpm dev
 ```
 
-## Production (VPS OVHcloud)
+## Déploiement sur Render (offre gratuite)
+
+1. Render Dashboard → **New → Blueprint** → sélectionner ce dépôt : `render.yaml` crée la base
+   PostgreSQL `cls-travel-db`, l'API `cls-travel-api` (Docker) et le front `cls-travel-web` (Node).
+2. Renseigner les variables demandées : `RESEND_API_KEY` (obligatoire), `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
+   `CONTACT_EMAIL`, `NEXT_PUBLIC_GMAPS_KEY`.
+3. Si Render attribue des URL différentes de `cls-travel-api.onrender.com` / `cls-travel-web.onrender.com`,
+   corriger `APP_URL`, `CORS_ORIGINS` (API) et `NEXT_PUBLIC_API_URL`, `INTERNAL_API_URL`,
+   `NEXT_PUBLIC_SITE_URL` (front), puis redéployer le front.
+4. Créer l'administrateur (une fois) depuis votre poste, avec l'« External Database URL » de la base :
+   ```bash
+   DATABASE_URL='<external-url>' ADMIN_EMAIL=… ADMIN_PASSWORD=… pnpm --filter @cls/api prisma:seed
+   ```
+
+Les migrations Prisma s'appliquent au démarrage de l'API ; chaque push sur `main` redéploie.
+Limites de l'offre gratuite : mise en veille après 15 min (réveil ≈ 1 min), **fichiers téléversés perdus
+à chaque redéploiement** (disque éphémère), base gratuite expirant après 30 jours.
+
+## Production (VPS OVHcloud — alternative Docker Compose)
 
 ```bash
 # Première installation sur le VPS (Ubuntu 24.04 + Docker)

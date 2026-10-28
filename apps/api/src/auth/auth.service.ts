@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ConflictException,
-  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,15 +8,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService, type JwtSignOptions } from '@nestjs/jwt';
 import type { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
-import type Redis from 'ioredis';
 import { randomBytes } from 'node:crypto';
 import { AuditService } from '../audit/audit.service';
 import { toPublicUser, type PublicUser } from '../common/public-user';
 import type { RequestMeta } from '../common/request-meta';
 import { escapeHtml, mailLayout } from '../mail/mail.layout';
 import { MailService } from '../mail/mail.service';
+import { MemoryStore } from '../cache/memory-store';
 import { PrismaService } from '../prisma/prisma.service';
-import { REDIS } from '../redis/redis.module';
 import type { LoginDto } from './dto/login.dto';
 import type { RegisterDto } from './dto/register.dto';
 import { BCRYPT_ROUNDS, compareToken, hashToken, sha256 } from './token-hash';
@@ -47,7 +45,7 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly mail: MailService,
     private readonly audit: AuditService,
-    @Inject(REDIS) private readonly redis: Redis,
+    private readonly store: MemoryStore,
   ) {}
 
   async register(dto: RegisterDto, meta: RequestMeta): Promise<AuthResult> {
@@ -144,7 +142,8 @@ export class AuthService {
     if (!user) return;
 
     const token = randomBytes(32).toString('hex');
-    await this.redis.set(resetKey(sha256(token)), user.id, 'EX', RESET_TTL_SECONDS);
+    // En mémoire : un redémarrage de l'API invalide les liens en cours (l'utilisateur en redemande un)
+    this.store.set(resetKey(sha256(token)), user.id, RESET_TTL_SECONDS);
 
     const url = `${this.config.get('appUrl')}/reset-password?token=${token}`;
     await this.mail.send({
@@ -162,7 +161,7 @@ export class AuthService {
   async resetPassword(token: string, password: string, meta: RequestMeta): Promise<void> {
     const key = resetKey(sha256(token));
     // GETDEL : le token est à usage unique
-    const userId = await this.redis.getdel(key);
+    const userId = this.store.getdel(key);
     if (!userId) throw new BadRequestException('Lien de réinitialisation invalide ou expiré');
 
     await this.prisma.user.update({

@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
       // Fichiers téléversés servis par l'API (https://api.carthagoloisirs.com/uploads/…)
       { protocol: 'https', hostname: 'api.carthagoloisirs.com', pathname: '/uploads/**' },
       { protocol: 'http', hostname: 'localhost', port: '4000', pathname: '/uploads/**' },
+      // Render : API sur *.onrender.com
+      { protocol: 'https', hostname: '**.onrender.com', pathname: '/uploads/**' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },

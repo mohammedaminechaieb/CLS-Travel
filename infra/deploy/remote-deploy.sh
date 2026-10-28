@@ -16,7 +16,7 @@ echo "→ Pull des images ${IMAGE_TAG:0:12}"
 compose pull backend frontend
 
 echo "→ Démarrage des dépendances"
-compose up -d postgres redis
+compose up -d postgres
 
 echo "→ Migrations Prisma"
 compose run --rm --no-deps backend npx prisma migrate deploy

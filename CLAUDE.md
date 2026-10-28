@@ -2,7 +2,7 @@
 
 > Agence de voyage · `carthagoloisirs.com` · OVHcloud VPS
 > Société : **CLS Travel**
-> Stack : Next.js 15 + NestJS + PostgreSQL 16 + Redis + Docker
+> Stack : Next.js 15 + NestJS + PostgreSQL 16 — déployé sur Render (`render.yaml`), Docker Compose VPS en alternative
 
 ---
 
@@ -62,12 +62,12 @@ feat(ci-cd): github actions workflow — test + build + deploy
 | Backend API | NestJS + TypeScript |
 | ORM | Prisma ORM |
 | Base de données | PostgreSQL 16 |
-| Cache / Rate-limit | Redis 7 |
+| Cache / Rate-limit | En mémoire (instance unique) — Redis retiré |
 | Auth | JWT access (15min) + refresh (7j) en HttpOnly cookie, haché en BDD |
 | Paiement | Aucun paiement en ligne pour l'instant (Stripe retiré, phase ultérieure) — règlement auprès du conseiller |
 | Emails | Resend (transactionnel) |
 | Storage | Disque local du backend (`/app/uploads`, volume Docker `cls_uploads_data`), servi sur `https://api.carthagoloisirs.com/uploads/` |
-| Déploiement | Docker Compose + Nginx + Certbot Let's Encrypt |
+| Déploiement | Render free tier (`render.yaml` : API Docker, web Node, PostgreSQL) — alternative : Docker Compose + Nginx + Certbot |
 | CI/CD | GitHub Actions |
 
 ---
@@ -202,7 +202,7 @@ Implémentation : Guards NestJS + décorateur `@Roles()` sur chaque controller.
 1. **JWT** : access token 15min, refresh token 7j en HttpOnly cookie, haché en BDD avec bcrypt
 2. **HTTPS** : Let's Encrypt via Certbot, HSTS `max-age=31536000`
 3. **Helmet.js** : CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
-4. **Rate limiting** : Redis + NestJS throttler — 100 req/min API publique, 10 req/min sur `/auth/login`
+4. **Rate limiting** : NestJS throttler (stockage mémoire) — 100 req/min API publique, 10 req/min sur `/auth/login`
 5. **PCI-DSS** : jamais de numéro de carte en BDD ni sur le site (aucun paiement en ligne actuellement)
 6. **Validation** : `class-validator` + `class-transformer` sur tous les DTOs NestJS
 7. **CORS** : origines autorisées `carthagoloisirs.com` et `www.carthagoloisirs.com` uniquement
@@ -270,8 +270,7 @@ API_URL=https://api.carthagoloisirs.com
 # Database
 DATABASE_URL=postgresql://clsuser:PASSWORD@postgres:5432/cls_travel
 
-# Redis
-REDIS_URL=redis://redis:6379
+# Redis : plus nécessaire (retiré)
 
 # JWT
 JWT_ACCESS_SECRET=<random-64-chars>
@@ -294,11 +293,10 @@ ADMIN_PASSWORD=<strong-password>
 
 ## 11. Docker Compose — services
 
-5 services en production :
+4 services en production VPS (sur Render : voir `render.yaml`) :
 - `frontend` : Next.js standalone — port interne 3000
 - `backend` : NestJS — port interne 4000
 - `postgres` : PostgreSQL 16 alpine — port 5432, volume persistant
-- `redis` : Redis 7 alpine — port 6379
 - `nginx` : reverse proxy 80→443, ssl, rate-limit — ports 80 et 443
 
 Nginx route :
@@ -345,7 +343,7 @@ Nginx route :
 
 ```bash
 pnpm install                                   # installe tout le monorepo (pnpm 9)
-docker compose -f docker-compose.dev.yml up -d # Postgres 16 + Redis 7 en local
+docker compose -f docker-compose.dev.yml up -d # Postgres 16 en local
 pnpm --filter @cls/shared build                # à refaire après modification de packages/shared
 pnpm --filter @cls/api prisma:migrate          # nouvelle migration (dev)
 SEED_DEMO=true pnpm --filter @cls/api prisma:seed  # destinations + admin (+ données de démo)
@@ -363,8 +361,14 @@ pnpm build                                     # shared → api → web (standal
   directement `confirmed` (`INITIAL_BOOKING_STATUS` dans `bookings/bookings.service.ts`) ; le règlement
   se fait auprès du conseiller. Les tables `payments` / `stripe_events` restent dans le schéma.
 - **PDF** : Puppeteer (`puppeteer-core`) + Chromium système (`CHROMIUM_PATH`).
-- **CI/CD** : `.github/workflows/deploy.yml` (tests → images ghcr.io → SSH → `prisma migrate deploy`
-  → health check avec rollback). Secrets : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_SSH_KNOWN_HOSTS`.
+- **Déploiement Render** : `render.yaml` (Blueprint). API en Docker (Chromium pour les PDF), migrations au
+  démarrage (`prisma migrate deploy`), écoute sur `PORT`, health check `GET /health`. Front Node standalone.
+  Front/API sur `*.onrender.com` = sites distincts → `COOKIE_SAMESITE=none`.
+- **CI/CD** : `.github/workflows/deploy.yml` — tests sur push/PR ; le déploiement VPS (ghcr.io → SSH →
+  migrations → health check) ne s'exécute plus qu'en lancement manuel.
 - **Fichiers téléversés** : `media/media.service.ts` écrit dans `UPLOAD_DIR` (`/app/uploads` dans le conteneur),
   `ServeStaticModule` les sert sur `/uploads` ; URL publique = `${API_URL}/uploads/<fichier>`.
+  ⚠ Render free : disque éphémère, fichiers perdus à chaque redéploiement (acceptable pour les tests).
+- **État en mémoire** : `cache/memory-store.ts` (jetons de reset, cache analytics) + throttler mémoire —
+  perdu au redémarrage, non partagé : rester sur une seule instance ou réintroduire un stockage partagé.
 - **Sauvegardes** : `infra/backup/backup.sh` (cron quotidien sur le VPS) → `/opt/cls-travel/backups/` (chiffré, 30 j).

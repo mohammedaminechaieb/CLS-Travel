@@ -6,12 +6,15 @@ export function validateEnv(env: Record<string, unknown>): Record<string, unknow
   if (missing.length > 0) {
     throw new Error(`Variables d'environnement manquantes : ${missing.join(', ')}`);
   }
+  if (env.COOKIE_SAMESITE && !['lax', 'strict', 'none'].includes(String(env.COOKIE_SAMESITE).toLowerCase())) {
+    throw new Error('COOKIE_SAMESITE doit valoir lax, strict ou none');
+  }
   if (env.NODE_ENV === 'production') {
     // En production les emails sont obligatoires (vérification, reset, confirmations)
     if (!env.RESEND_API_KEY) throw new Error("Variable d'environnement manquante : RESEND_API_KEY");
     if (!String(env.RESEND_API_KEY).startsWith('re_')) throw new Error('RESEND_API_KEY invalide (préfixe attendu : re_)');
     // Les URL publiques des fichiers téléversés sont construites à partir de API_URL
-    if (!/^https:\/\//.test(String(env.API_URL ?? ''))) {
+    if (!/^https:\/\//.test(String(env.API_URL || env.RENDER_EXTERNAL_URL || ''))) {
       throw new Error('API_URL doit être une URL https en production (ex. https://api.carthagoloisirs.com)');
     }
     for (const key of ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'] as const) {

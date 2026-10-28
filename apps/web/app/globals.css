@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============ Design tokens — CLS Travel ============ */
+:root {
+  --color-primary: #1c3a5e; /* Bleu méditerranéen — nav, boutons primaires */
+  --color-accent: #b8872a; /* Or carthaginois — badges, highlights */
+  --color-cta: #c85a2a; /* Terracotta — CTA "Réserver" */
+  --color-bg: #faf8f3; /* Ivoire chaud — fond */
+  --color-surface: #ffffff; /* Cartes, modals */
+  --color-text: #1a1612; /* Corps de texte */
+  --color-text-muted: #5a5042; /* Texte secondaire */
+
+  /* Triplets RGB pour l'opacité Tailwind (bg-primary/10 …) */
+  --color-primary-rgb: 28 58 94;
+  --color-on-primary-rgb: 255 255 255;
+  --color-accent-rgb: 184 135 42;
+  --color-on-accent-rgb: 26 22 18;
+  --color-cta-rgb: 200 90 42;
+  --color-cta-hover-rgb: 169 72 31;
+  --color-bg-rgb: 250 248 243;
+  --color-surface-rgb: 255 255 255;
+  --color-text-rgb: 26 22 18;
+  --color-text-muted-rgb: 90 80 66;
+  --color-muted-rgb: 241 236 226;
+  --color-border-rgb: 226 219 205;
+  --color-ring-rgb: 28 58 94;
+  --color-success-rgb: 21 115 71;
+  --color-danger-rgb: 180 35 24;
+
+  --radius: 0.75rem;
+  /* Surchargée par next/font quand la locale arabe est chargée */
+  --font-arabic: 'Noto Sans Arabic';
+  --font-arabic-display: 'Noto Kufi Arabic';
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #8db3e2;
+    --color-accent: #d9a84a;
+    --color-cta: #e07a4a;
+    --color-bg: #121417;
+    --color-surface: #1b1f24;
+    --color-text: #f3efe6;
+    --color-text-muted: #c2b8a6;
+
+    --color-primary-rgb: 141 179 226;
+    --color-on-primary-rgb: 14 26 42;
+    --color-accent-rgb: 217 168 74;
+    --color-on-accent-rgb: 26 22 18;
+    --color-cta-rgb: 168 70 30;
+    --color-cta-hover-rgb: 196 90 46;
+    --color-bg-rgb: 18 20 23;
+    --color-surface-rgb: 27 31 36;
+    --color-text-rgb: 243 239 230;
+    --color-text-muted-rgb: 194 184 166;
+    --color-muted-rgb: 38 43 50;
+    --color-border-rgb: 52 58 66;
+    --color-ring-rgb: 141 179 226;
+    --color-success-rgb: 74 190 130;
+    --color-danger-rgb: 240 110 100;
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg font-sans text-text antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    @apply font-serif tracking-tight;
+  }
+  /* Focus visible (WCAG 2.4.7) */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-bg;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-content {
+    @apply mx-auto w-full max-w-content px-4 md:px-6 lg:px-8;
+  }
+  .grid-12 {
+    @apply grid grid-cols-4 gap-4 md:grid-cols-8 md:gap-6 lg:grid-cols-12;
+  }
+}
+
+/* Contenu riche (Tiptap) — blog et programmes */
+@layer components {
+  .prose-cls {
+    @apply max-w-none leading-relaxed text-text;
+  }
+  .prose-cls > * + * {
+    @apply mt-4;
+  }
+  .prose-cls h2 {
+    @apply mt-10 text-2xl font-bold;
+  }
+  .prose-cls h3 {
+    @apply mt-8 text-xl font-semibold;
+  }
+  .prose-cls h4 {
+    @apply mt-6 text-lg font-semibold;
+  }
+  .prose-cls ul {
+    @apply list-disc ps-6;
+  }
+  .prose-cls ol {
+    @apply list-decimal ps-6;
+  }
+  .prose-cls li + li {
+    @apply mt-1;
+  }
+  .prose-cls blockquote {
+    @apply border-s-4 border-accent ps-4 italic text-text-muted;
+  }
+  .prose-cls pre {
+    @apply overflow-x-auto rounded-md bg-muted p-4 text-sm;
+  }
+  .prose-cls hr {
+    @apply my-8 border-border;
+  }
+}
+
+/* Placeholder Tiptap */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  pointer-events: none;
+  color: rgb(var(--color-text-muted-rgb) / 0.8);
+}
+
+/* Arabe : la police latine d'affichage n'a pas de glyphes arabes, on privilégie la Kufi */
+[dir='rtl'] h1,
+[dir='rtl'] h2,
+[dir='rtl'] h3,
+[dir='rtl'] .font-serif {
+  font-family: var(--font-arabic-display), var(--font-playfair), serif;
+  letter-spacing: 0;
+}
+[dir='rtl'] body {
+  font-family: var(--font-arabic), var(--font-inter), system-ui, sans-serif;
+}

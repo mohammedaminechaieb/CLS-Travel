@@ -56,7 +56,7 @@ export function PackageCard({ pkg, priority = false, linkQuery }: { pkg: Package
           <p className="text-xs text-text-muted">
             {t('from')}
             <span className="block font-serif text-2xl font-bold text-primary">
-              {format.number(Number(pkg.base_price), { style: 'currency', currency: 'TND', maximumFractionDigits: 0 })}
+              {format.number(Number(pkg.base_price), { style: 'currency', currency: 'TND', minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </span>
           </p>
           <span className="text-xs text-text-muted">{t('perPerson')}</span>

@@ -73,7 +73,7 @@ export function CatalogueFilters({
 
   const selectedCategories = list(params.get('category'));
   const selectedDestinations = list(params.get('destination_id'));
-  const money = (v: number) => format.number(v, { style: 'currency', currency: 'TND', maximumFractionDigits: 0 });
+  const money = (v: number) => format.number(v, { style: 'currency', currency: 'TND', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
   return (
     <div className="flex flex-col gap-8" aria-busy={pending}>

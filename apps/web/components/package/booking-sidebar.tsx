@@ -26,7 +26,7 @@ export function BookingSidebar({ pkg }: { pkg: Pick<PackageDetail, 'slug' | 'bas
 
   const price = Number(pkg.base_price);
   const total = price * travelers;
-  const money = (v: number) => format.number(v, { style: 'currency', currency: 'TND', maximumFractionDigits: 0 });
+  const money = (v: number) => format.number(v, { style: 'currency', currency: 'TND', minimumFractionDigits: 0, maximumFractionDigits: 0 });
   const href = `/reserver/${pkg.slug}?${new URLSearchParams({ ...(date && { date }), travelers: String(travelers) })}`;
 
   return (

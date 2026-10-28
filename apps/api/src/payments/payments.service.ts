@@ -42,6 +42,18 @@ export class PaymentsService {
    * Stripe Elements tokenise côté navigateur avec le client_secret renvoyé ici (PCI-DSS SAQ A).
    */
   async createIntent(bookingId: string, type: PaymentType, user: AuthUser, meta: RequestMeta) {
+    try {
+      return await this.doCreateIntent(bookingId, type, user, meta);
+    } catch (err) {
+      if (err instanceof Stripe.errors.StripeError) {
+        this.logger.error(`Stripe error (${err.type}): ${err.message}`);
+        throw new ServiceUnavailableException('Le service de paiement est momentanément indisponible. Réessayez dans quelques instants.');
+      }
+      throw err;
+    }
+  }
+
+  private async doCreateIntent(bookingId: string, type: PaymentType, user: AuthUser, meta: RequestMeta) {
     const stripe = this.requireStripe();
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },

@@ -159,6 +159,12 @@ importers:
       '@radix-ui/react-tabs':
         specifier: ^1.2.1
         version: 1.2.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@stripe/react-stripe-js':
+        specifier: ^3
+        version: 3.11.0(@stripe/stripe-js@5.10.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@stripe/stripe-js':
+        specifier: ^5
+        version: 5.10.0
       '@tanstack/react-query':
         specifier: ^5
         version: 5.105.0(@types/react@19.3.0)(react@19.3.1)
@@ -1921,6 +1927,17 @@ packages:
 
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+
+  '@stripe/react-stripe-js@3.11.0':
+    resolution: {integrity: sha512-5L2Qsg68ELyDGdiQb6mnT4fgyl6V6GN4nJzGdKmVJ3CfbQFv1H157/LJTjJVyQGLN2bZ20cFYFMn2YwZ2TJElw==}
+    peerDependencies:
+      '@stripe/stripe-js': '>=1.44.1 <8.0.0'
+      react: '>=16.8.0 <20.0.0'
+      react-dom: '>=16.8.0 <20.0.0'
+
+  '@stripe/stripe-js@5.10.0':
+    resolution: {integrity: sha512-PTigkxMdMUP6B5ISS7jMqJAKhgrhZwjprDqR1eATtFfh0OpKVNp110xiH+goeVdrJ29/4LeZJR4FaHHWstsu0A==}
+    engines: {node: '>=12.16'}
 
   '@swc/core-darwin-arm64@1.16.20':
     resolution: {integrity: sha512-i7NFSDnuE6tdBvBgmoVKKmburgcwZt/FZK2IusJaVGrjFrMUC1hrgE3RI+Kt9RhYM7vHvQj0W9j53zSxKEMbWQ==}
@@ -6928,6 +6945,15 @@ snapshots:
   '@standard-schema/spec@1.1.0': {}
 
   '@standard-schema/utils@0.3.0': {}
+
+  '@stripe/react-stripe-js@3.11.0(@stripe/stripe-js@5.10.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    dependencies:
+      '@stripe/stripe-js': 5.10.0
+      prop-types: 15.8.1
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+
+  '@stripe/stripe-js@5.10.0': {}
 
   '@swc/core-darwin-arm64@1.16.20':
     optional: true

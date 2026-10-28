@@ -36,7 +36,7 @@ export async function DestinationsGrid({ destinations }: { destinations: Destina
                 {d.price_from && (
                   <>
                     {' · '}
-                    {tc('from')} {format.number(Number(d.price_from), { style: 'currency', currency: 'TND', maximumFractionDigits: 0 })}
+                    {tc('from')} {format.number(Number(d.price_from), { style: 'currency', currency: 'TND', minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </>
                 )}
               </p>

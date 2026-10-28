@@ -17,6 +17,7 @@ import { safeNext } from '@/lib/safe-redirect';
 
 export function LoginForm() {
   const t = useTranslations('auth');
+  const tc = useTranslations('common');
   const { login } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
@@ -35,7 +36,8 @@ export function LoginForm() {
       const isStaff = (STAFF_ROLES as readonly string[]).includes(user.role);
       router.replace(safeNext(params.get('next'), isStaff ? '/admin' : '/espace-client'));
     } catch (err) {
-      setError(err instanceof ApiError && err.status === 429 ? t('errors.tooMany') : t('errors.invalidCredentials'));
+      if (!(err instanceof ApiError)) setError(tc('error'));
+      else setError(err.status === 429 ? t('errors.tooMany') : err.status === 401 ? t('errors.invalidCredentials') : err.message);
     }
   });
 

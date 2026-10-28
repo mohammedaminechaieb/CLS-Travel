@@ -141,3 +141,12 @@
     @apply my-8 border-border;
   }
 }
+
+/* Placeholder Tiptap */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  pointer-events: none;
+  color: rgb(var(--color-text-muted-rgb) / 0.8);
+}

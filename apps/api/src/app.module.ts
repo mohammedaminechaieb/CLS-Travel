@@ -17,6 +17,7 @@ import { DestinationsModule } from './destinations/destinations.module';
 import { DocumentsModule } from './documents/documents.module';
 import { HealthController } from './health/health.controller';
 import { MailModule } from './mail/mail.module';
+import { MediaModule } from './media/media.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PackagesModule } from './packages/packages.module';
@@ -61,6 +62,7 @@ import { UsersModule } from './users/users.module';
     AnalyticsModule,
     NewsletterModule,
     DocumentsModule,
+    MediaModule,
   ],
   controllers: [HealthController],
   providers: [

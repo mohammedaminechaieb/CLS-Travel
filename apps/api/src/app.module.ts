@@ -2,9 +2,11 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
+import { BookingsModule } from './bookings/bookings.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import configuration from './config/configuration';
@@ -33,6 +35,7 @@ import { UsersModule } from './users/users.module';
         storage: new ThrottlerStorageRedisService(config.get<string>('redisUrl')!),
       }),
     }),
+    EventEmitterModule.forRoot(),
     PrismaModule,
     RedisModule,
     AuditModule,
@@ -41,6 +44,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     DestinationsModule,
     PackagesModule,
+    BookingsModule,
   ],
   controllers: [HealthController],
   providers: [

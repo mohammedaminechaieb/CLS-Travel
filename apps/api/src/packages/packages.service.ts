@@ -199,13 +199,17 @@ export class PackagesService {
   }
 
   /** Places restantes pour une date de départ (réservations non annulées). */
-  async remainingCapacity(packageId: string, departure: Date, maxCapacity: number, excludeBookingId?: string) {
-    const bookings = await this.prisma.booking.findMany({
+  async remainingCapacity(
+    packageId: string,
+    departure: Date,
+    maxCapacity: number,
+    client: Prisma.TransactionClient = this.prisma,
+  ) {
+    const bookings = await client.booking.findMany({
       where: {
         package_id: packageId,
         departure_date: departure,
         status: { in: [BookingStatus.pending, BookingStatus.confirmed] },
-        ...(excludeBookingId && { id: { not: excludeBookingId } }),
       },
       select: { participants: true },
     });

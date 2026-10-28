@@ -36,8 +36,8 @@ export default function AdminBlogPage() {
             <tr>{[t('titleFr'), tc('status'), t('publishedAt'), tc('actions')].map((h) => <th key={h} scope="col" className="px-3 py-3 text-start font-medium">{h}</th>)}</tr>
           </thead>
           <tbody>
-            {data?.data.length === 0 && <tr><td colSpan={4} className="p-8 text-center text-text-muted">{tc('empty')}</td></tr>}
-            {data?.data.map((p) => (
+            {(data?.data ?? []).length === 0 && <tr><td colSpan={4} className="p-8 text-center text-text-muted">{tc('empty')}</td></tr>}
+            {(data?.data ?? []).map((p) => (
               <tr key={p.id} className="border-t border-border">
                 <td className="px-3 py-2.5"><span className="block font-medium">{p.title_fr}</span><span className="font-mono text-xs text-text-muted">/blog/{p.slug}</span></td>
                 <td className="px-3 py-2.5"><Badge variant={p.status === 'published' ? 'success' : 'warning'}>{t(`statusLabels.${p.status}`)}</Badge></td>

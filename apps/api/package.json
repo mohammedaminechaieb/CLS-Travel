@@ -52,7 +52,8 @@
     "ioredis": "^6.0.0",
     "prisma": "^6.19.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "stripe": "^17"
   },
   "devDependencies": {
     "@nestjs/cli": "^11",

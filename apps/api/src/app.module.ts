@@ -15,6 +15,7 @@ import { DestinationsModule } from './destinations/destinations.module';
 import { HealthController } from './health/health.controller';
 import { MailModule } from './mail/mail.module';
 import { PackagesModule } from './packages/packages.module';
+import { PaymentsModule } from './payments/payments.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { UsersModule } from './users/users.module';
@@ -45,6 +46,7 @@ import { UsersModule } from './users/users.module';
     DestinationsModule,
     PackagesModule,
     BookingsModule,
+    PaymentsModule,
   ],
   controllers: [HealthController],
   providers: [

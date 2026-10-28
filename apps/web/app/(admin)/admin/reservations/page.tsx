@@ -79,7 +79,7 @@ export default function AdminBookingsPage() {
       <div className="mb-4 grid gap-3 rounded-lg border border-border bg-surface p-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label htmlFor="b-search" className="mb-1 block text-xs font-medium text-text-muted">{tc('search')}</label>
-          <Input id="b-search" type="search" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="CLS-2026-…, nom, email" />
+          <Input id="b-search" type="search" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder={t('searchPlaceholder')} />
         </div>
         <div>
           <label htmlFor="b-status" className="mb-1 block text-xs font-medium text-text-muted">{tc('status')}</label>

@@ -15,8 +15,8 @@ export async function Footer() {
       title: t('explore'),
       links: [
         { href: '/voyages', label: nav('trips') },
-        { href: '/voyages?category=circuit', label: 'Circuits' },
-        { href: '/voyages?category=omra', label: 'Omra' },
+        { href: '/voyages?category=circuit', label: t('circuits') },
+        { href: '/voyages?category=omra', label: t('omra') },
         { href: '/destinations', label: nav('destinations') },
       ],
     },

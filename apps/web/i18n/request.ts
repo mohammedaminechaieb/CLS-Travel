@@ -1,8 +1,14 @@
+import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
-import { DEFAULT_LOCALE } from '@cls/shared';
+import { isLocale, LOCALE_COOKIE, negotiate } from './config';
 
+/**
+ * Locale sans préfixe d'URL : cookie NEXT_LOCALE (choix explicite via le sélecteur),
+ * sinon négociation Accept-Language, sinon français.
+ */
 export default getRequestConfig(async () => {
-  const locale = DEFAULT_LOCALE;
+  const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
+  const locale = isLocale(cookieLocale) ? cookieLocale : negotiate((await headers()).get('accept-language'));
   return {
     locale,
     messages: (await import(`./messages/${locale}.json`)).default,

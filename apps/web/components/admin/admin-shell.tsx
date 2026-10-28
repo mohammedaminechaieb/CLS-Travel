@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { Logo } from '@/components/layout/logo';
 import { UserMenu } from '@/components/layout/user-menu';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ const LINKS = [
   { href: '/admin/promo', key: 'promo', icon: TicketPercent, roles: ADMIN },
 ] as const;
 
-export function AdminShell({ children, languageSwitcher }: { children: React.ReactNode; languageSwitcher?: React.ReactNode }) {
+export function AdminShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations('admin');
   const pathname = usePathname();
   const { user } = useAuth();
@@ -85,7 +86,7 @@ export function AdminShell({ children, languageSwitcher }: { children: React.Rea
             <span className="font-serif text-lg font-semibold">{t('title')}</span>
           </div>
           <div className="flex items-center gap-1">
-            {languageSwitcher}
+            <LanguageSwitcher />
             <UserMenu />
           </div>
         </header>

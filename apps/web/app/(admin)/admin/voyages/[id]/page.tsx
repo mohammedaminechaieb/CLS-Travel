@@ -184,15 +184,15 @@ export default function PackageEditorPage() {
         {form.itinerary.map((d, i) => (
           <fieldset key={i} className="flex flex-col gap-3 rounded-md border border-border p-4">
             <div className="flex items-center justify-between">
-              <legend className="font-semibold">J{i + 1}</legend>
+              <legend className="font-semibold">{t('dayShort', { day: i + 1 })}</legend>
               <Button type="button" variant="ghost" size="sm" onClick={() => set('itinerary', form.itinerary.filter((_, j) => j !== i))} aria-label={t('removeDay', { day: i + 1 })}>
                 <Trash2 className="text-danger" aria-hidden />
               </Button>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
-              <Input aria-label={`${t('dayTitle', { day: i + 1 })} (FR)`} placeholder="Titre FR" value={d.title_fr} onChange={(e) => setDay(i, { title_fr: e.target.value })} required />
-              <Input aria-label={`${t('dayTitle', { day: i + 1 })} (AR)`} placeholder="العنوان" dir="rtl" value={d.title_ar ?? ''} onChange={(e) => setDay(i, { title_ar: e.target.value })} />
-              <Input aria-label={`${t('dayTitle', { day: i + 1 })} (EN)`} placeholder="Title EN" value={d.title_en ?? ''} onChange={(e) => setDay(i, { title_en: e.target.value })} />
+              <Input aria-label={`${t('dayTitle', { day: i + 1 })} (FR)`} placeholder={t('dayTitlePlaceholder.fr')} value={d.title_fr} onChange={(e) => setDay(i, { title_fr: e.target.value })} required />
+              <Input aria-label={`${t('dayTitle', { day: i + 1 })} (AR)`} placeholder={t('dayTitlePlaceholder.ar')} dir="rtl" value={d.title_ar ?? ''} onChange={(e) => setDay(i, { title_ar: e.target.value })} />
+              <Input aria-label={`${t('dayTitle', { day: i + 1 })} (EN)`} placeholder={t('dayTitlePlaceholder.en')} value={d.title_en ?? ''} onChange={(e) => setDay(i, { title_en: e.target.value })} />
             </div>
             <TiptapEditor
               id={`day-${i}-content`}

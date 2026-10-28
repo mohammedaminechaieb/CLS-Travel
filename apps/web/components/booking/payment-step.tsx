@@ -5,7 +5,7 @@ import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-
 import { useMutation } from '@tanstack/react-query';
 import { Lock, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/lib/api-client';
@@ -22,6 +22,7 @@ export function PaymentStep({ bookingId, total, paid }: { bookingId: string; tot
   const t = useTranslations('booking');
   const format = useFormatter();
   const { request } = useAuth();
+  const locale = useLocale() as 'fr' | 'ar' | 'en';
   const stripePromise = useMemo(() => getStripe(), []);
 
   const options: PaymentType[] = paid > 0 ? ['balance'] : ['deposit', 'full'];
@@ -90,7 +91,7 @@ export function PaymentStep({ bookingId, total, paid }: { bookingId: string; tot
         <Elements
           key={intent.data.client_secret}
           stripe={stripePromise}
-          options={{ clientSecret: intent.data.client_secret, appearance: stripeAppearance, locale: 'fr' }}
+          options={{ clientSecret: intent.data.client_secret, appearance: stripeAppearance, locale }}
         >
           <CheckoutForm bookingId={bookingId} intent={intent.data} label={money(Number(intent.data.amount_tnd))} />
         </Elements>

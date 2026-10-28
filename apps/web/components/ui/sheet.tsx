@@ -3,6 +3,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 /** Panneau latéral (menu mobile, filtres) basé sur Radix Dialog. */
@@ -15,9 +16,10 @@ export function SheetContent({
   side = 'end',
   className,
   children,
-  closeLabel = 'Fermer',
+  closeLabel,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { side?: 'start' | 'end'; closeLabel?: string }) {
+  const tCommon = useTranslations('common');
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
@@ -30,7 +32,7 @@ export function SheetContent({
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute end-4 top-4 rounded-sm opacity-70 hover:opacity-100" aria-label={closeLabel}>
+        <DialogPrimitive.Close className="absolute end-4 top-4 rounded-sm opacity-70 hover:opacity-100" aria-label={closeLabel ?? tCommon('close')}>
           <X className="size-5" />
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>

@@ -47,7 +47,14 @@
     "logout": "Déconnexion",
     "openMenu": "Ouvrir le menu",
     "mainNav": "Navigation principale",
-    "language": "Langue"
+    "language": "Langue",
+    "homeAria": "CLS Travel — accueil",
+    "languages": {
+      "fr": "Français",
+      "ar": "العربية",
+      "en": "English"
+    },
+    "changeLanguage": "Changer de langue (actuelle : {current})"
   },
   "footer": {
     "tagline": "Agence de voyage tunisienne depuis Carthage : circuits, séjours, Omra et voyages d’affaires sur mesure.",
@@ -66,7 +73,9 @@
     "newsletterCta": "S’inscrire",
     "newsletterSuccess": "Merci ! Votre inscription est confirmée.",
     "newsletterError": "Inscription impossible pour le moment.",
-    "emailLabel": "Adresse email pour la newsletter"
+    "emailLabel": "Adresse email pour la newsletter",
+    "circuits": "Circuits",
+    "omra": "Omra"
   },
   "home": {
     "heroEyebrow": "Agence de voyage — Tunisie",
@@ -449,7 +458,8 @@
       "details": "Détails",
       "notes": "Notes internes",
       "notesSaved": "Notes enregistrées",
-      "participants": "Voyageurs"
+      "participants": "Voyageurs",
+      "searchPlaceholder": "CLS-2026-…, nom, email"
     },
     "packages": {
       "title": "Voyages",
@@ -491,7 +501,13 @@
       "bookingsCount": "Réservations",
       "updated": "Mis à jour",
       "view": "Voir la fiche",
-      "archivedInstead": "Voyage archivé (il a des réservations)"
+      "archivedInstead": "Voyage archivé (il a des réservations)",
+      "dayShort": "J{day}",
+      "dayTitlePlaceholder": {
+        "fr": "Titre (FR)",
+        "ar": "العنوان (AR)",
+        "en": "Title (EN)"
+      }
     },
     "clients": {
       "title": "Clients (CRM)",

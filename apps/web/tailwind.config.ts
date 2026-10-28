@@ -34,7 +34,7 @@ const config: Config = {
         ring: token('ring'),
       },
       fontFamily: {
-        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        serif: ['var(--font-playfair)', 'var(--font-arabic-display)', 'Georgia', 'serif'],
         sans: ['var(--font-inter)', 'var(--font-arabic)', 'system-ui', 'sans-serif'],
       },
       spacing: { 18: '4.5rem' },

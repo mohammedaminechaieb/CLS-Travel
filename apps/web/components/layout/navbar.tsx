@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { LanguageSwitcher } from './language-switcher';
 import { Logo } from './logo';
 import { UserMenu } from './user-menu';
 
@@ -19,7 +20,7 @@ const LINKS = [
   { href: '/contact', key: 'contact' },
 ] as const;
 
-export function Navbar({ languageSwitcher }: { languageSwitcher?: React.ReactNode }) {
+export function Navbar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -63,7 +64,7 @@ export function Navbar({ languageSwitcher }: { languageSwitcher?: React.ReactNod
           </ul>
         </nav>
         <div className="flex items-center gap-1">
-          {languageSwitcher}
+          <LanguageSwitcher />
           <UserMenu />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

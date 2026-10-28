@@ -3,6 +3,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 export const Dialog = DialogPrimitive.Root;
@@ -12,7 +13,9 @@ export const DialogClose = DialogPrimitive.Close;
 export const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { closeLabel?: string }
->(({ className, children, closeLabel = 'Fermer', ...props }, ref) => (
+>(({ className, children, closeLabel, ...props }, ref) => {
+  const tCommon = useTranslations('common');
+  return (
   <DialogPrimitive.Portal>
     <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
     <DialogPrimitive.Content
@@ -24,12 +27,13 @@ export const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute end-4 top-4 rounded-sm opacity-70 hover:opacity-100" aria-label={closeLabel}>
+      <DialogPrimitive.Close className="absolute end-4 top-4 rounded-sm opacity-70 hover:opacity-100" aria-label={closeLabel ?? tCommon('close')}>
         <X className="size-5" />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
-));
+  );
+});
 DialogContent.displayName = 'DialogContent';
 
 export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (

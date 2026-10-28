@@ -15,9 +15,11 @@ import { validateEnv } from './config/env.validation';
 import { DestinationsModule } from './destinations/destinations.module';
 import { HealthController } from './health/health.controller';
 import { MailModule } from './mail/mail.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PackagesModule } from './packages/packages.module';
 import { PaymentsModule } from './payments/payments.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { PromoModule } from './promo/promo.module';
 import { RedisModule } from './redis/redis.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { UsersModule } from './users/users.module';
@@ -51,6 +53,8 @@ import { UsersModule } from './users/users.module';
     PaymentsModule,
     ReviewsModule,
     BlogModule,
+    PromoModule,
+    NotificationsModule,
   ],
   controllers: [HealthController],
   providers: [

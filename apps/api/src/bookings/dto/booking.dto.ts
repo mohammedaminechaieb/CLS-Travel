@@ -46,6 +46,11 @@ export class CreateBookingDto {
   @ValidateNested({ each: true })
   @Type(() => ParticipantDto)
   participants: ParticipantDto[];
+
+  @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toUpperCase() : value))
+  @Matches(/^[A-Z0-9_-]{3,32}$/, { message: 'Code promo invalide' })
+  promo_code?: string;
 }
 
 export class UpdateBookingStatusDto {

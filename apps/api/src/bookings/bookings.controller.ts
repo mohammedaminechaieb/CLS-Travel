@@ -4,6 +4,7 @@ import { CurrentUser, type AuthUser } from '../common/decorators/current-user.de
 import { ADMINS, ALL_ROLES, Roles, STAFF } from '../common/decorators/roles.decorator';
 import { PaginationQueryDto } from '../common/pagination';
 import { requestMeta } from '../common/request-meta';
+import { PromoService } from '../promo/promo.service';
 import { BookingsService } from './bookings.service';
 import {
   AdminBookingQueryDto,
@@ -16,12 +17,21 @@ import {
 
 @Controller()
 export class BookingsController {
-  constructor(private readonly bookings: BookingsService) {}
+  constructor(
+    private readonly bookings: BookingsService,
+    private readonly promo: PromoService,
+  ) {}
 
   @Roles(...ALL_ROLES)
   @Post('bookings')
   create(@Body() dto: CreateBookingDto, @CurrentUser() user: AuthUser, @Req() req: Request) {
-    return this.bookings.create(dto, user, requestMeta(req));
+    const code = dto.promo_code;
+    return this.bookings.create(
+      dto,
+      user,
+      requestMeta(req),
+      code ? (pkgId, subtotal, tx) => this.promo.redeem(code, pkgId, subtotal, tx) : undefined,
+    );
   }
 
   @Roles(...ALL_ROLES)

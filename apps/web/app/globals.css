@@ -104,3 +104,40 @@
     @apply grid grid-cols-4 gap-4 md:grid-cols-8 md:gap-6 lg:grid-cols-12;
   }
 }
+
+/* Contenu riche (Tiptap) — blog et programmes */
+@layer components {
+  .prose-cls {
+    @apply max-w-none leading-relaxed text-text;
+  }
+  .prose-cls > * + * {
+    @apply mt-4;
+  }
+  .prose-cls h2 {
+    @apply mt-10 text-2xl font-bold;
+  }
+  .prose-cls h3 {
+    @apply mt-8 text-xl font-semibold;
+  }
+  .prose-cls h4 {
+    @apply mt-6 text-lg font-semibold;
+  }
+  .prose-cls ul {
+    @apply list-disc ps-6;
+  }
+  .prose-cls ol {
+    @apply list-decimal ps-6;
+  }
+  .prose-cls li + li {
+    @apply mt-1;
+  }
+  .prose-cls blockquote {
+    @apply border-s-4 border-accent ps-4 italic text-text-muted;
+  }
+  .prose-cls pre {
+    @apply overflow-x-auto rounded-md bg-muted p-4 text-sm;
+  }
+  .prose-cls hr {
+    @apply my-8 border-border;
+  }
+}

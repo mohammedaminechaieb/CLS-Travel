@@ -65,7 +65,7 @@ feat(ci-cd): github actions workflow — test + build + deploy
 | Cache / Rate-limit | Redis 7 |
 | Auth | JWT access (15min) + refresh (7j) en HttpOnly cookie, haché en BDD |
 | Paiement | Stripe Elements — acompte 30% + solde |
-| Emails | SendGrid (transactionnel) |
+| Emails | Resend (transactionnel) |
 | Storage | OVHcloud Object Storage (S3-compatible) |
 | Déploiement | Docker Compose + Nginx + Certbot Let's Encrypt |
 | CI/CD | GitHub Actions |
@@ -284,10 +284,8 @@ STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_DEPOSIT_PERCENT=30
 
-# SendGrid
-SENDGRID_API_KEY=SG....
-SENDGRID_FROM_EMAIL=noreply@carthagoloisirs.com
-SENDGRID_FROM_NAME=CLS Travel
+# Resend (expéditeur : noreply@carthagoloisirs.com, constante MAIL_FROM)
+RESEND_API_KEY=re_...
 
 # OVHcloud Object Storage (S3-compatible)
 OVH_S3_ENDPOINT=https://s3.gra.io.cloud.ovh.net
@@ -372,7 +370,7 @@ pnpm build                                     # shared → api → web (standal
   Toute chaîne UI va dans `apps/web/i18n/messages/{fr,ar,en}.json` (mêmes clés partout).
 - **Auth front** : access token en mémoire (`useAuth().request`), refresh via cookie HttpOnly `cls_rt` (path `/auth`).
 - **Événements** : les modules métier émettent des événements (`common/events`), le module
-  notifications envoie in-app + SendGrid. Ne pas appeler le mail directement depuis un service métier.
+  notifications envoie in-app + Resend (`mail/mail.service.ts`). Ne pas appeler le mail directement depuis un service métier.
 - **Paiements** : montants calculés côté API en TND (`payments/payment-amounts.ts`), débités en
   `STRIPE_CURRENCY` ; `payments.amount_tnd` est la valeur comptable.
 - **PDF** : Puppeteer (`puppeteer-core`) + Chromium système (`CHROMIUM_PATH`).

@@ -19,7 +19,7 @@ import { NotificationsService } from './notifications.service';
 const PAYMENT_LABEL = { deposit: 'acompte', balance: 'solde', full: 'règlement total' } as const;
 
 /**
- * Traduit les événements de domaine en notifications in-app + emails SendGrid.
+ * Traduit les événements de domaine en notifications in-app + emails Resend.
  * Exécuté en asynchrone : une erreur d'envoi n'affecte jamais la requête d'origine.
  */
 @Injectable()

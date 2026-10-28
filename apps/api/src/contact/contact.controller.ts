@@ -1,12 +1,11 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 import { Public } from '../common/decorators/public.decorator';
 import { E164_REGEX } from '../common/validators';
 import { escapeHtml, mailLayout } from '../mail/mail.layout';
-import { MailService } from '../mail/mail.service';
+import { AGENCY_EMAIL, MailService } from '../mail/mail.service';
 
 const trim = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value);
 export const CONTACT_SUBJECTS = ['information', 'devis', 'groupe', 'omra', 'reclamation', 'autre'] as const;
@@ -35,17 +34,14 @@ class ContactDto {
 
 @Controller('contact')
 export class ContactController {
-  constructor(
-    private readonly mail: MailService,
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private readonly mail: MailService) {}
 
   @Public()
   @Throttle({ default: { limit: 3, ttl: 60_000 } })
   @Post()
   @HttpCode(HttpStatus.ACCEPTED)
   async send(@Body() dto: ContactDto) {
-    const to = process.env.CONTACT_EMAIL || this.config.get<string>('sendgrid.fromEmail')!;
+    const to = process.env.CONTACT_EMAIL || AGENCY_EMAIL;
     const rows = [
       ['Nom', dto.name],
       ['Email', dto.email],

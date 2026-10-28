@@ -706,7 +706,7 @@
         },
         {
           "title": "Destinataires",
-          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Stripe pour le paiement, SendGrid pour les emails)."
+          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Stripe pour le paiement, Resend pour les emails)."
         },
         {
           "title": "Durée de conservation",

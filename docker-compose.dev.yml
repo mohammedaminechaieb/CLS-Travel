@@ -1,0 +1,31 @@
+# Développement local — uniquement les dépendances (Postgres + Redis).
+# Lancer ensuite `pnpm dev` à la racine (API sur :4000, web sur :3000).
+name: cls-travel-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: clsuser
+      POSTGRES_PASSWORD: clspassword
+      POSTGRES_DB: cls_travel
+    ports:
+      - "5432:5432"
+    volumes:
+      - cls_postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clsuser -d cls_travel"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - cls_redis_dev_data:/data
+
+volumes:
+  cls_postgres_dev_data:
+  cls_redis_dev_data:

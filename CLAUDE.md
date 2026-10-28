@@ -66,7 +66,7 @@ feat(ci-cd): github actions workflow — test + build + deploy
 | Auth | JWT access (15min) + refresh (7j) en HttpOnly cookie, haché en BDD |
 | Paiement | Aucun paiement en ligne pour l'instant (Stripe retiré, phase ultérieure) — règlement auprès du conseiller |
 | Emails | Resend (transactionnel) |
-| Storage | OVHcloud Object Storage (S3-compatible) |
+| Storage | Cloudflare R2 (API S3, `@aws-sdk/client-s3`) |
 | Déploiement | Docker Compose + Nginx + Certbot Let's Encrypt |
 | CI/CD | GitHub Actions |
 
@@ -207,7 +207,7 @@ Implémentation : Guards NestJS + décorateur `@Roles()` sur chaque controller.
 6. **Validation** : `class-validator` + `class-transformer` sur tous les DTOs NestJS
 7. **CORS** : origines autorisées `carthagoloisirs.com` et `www.carthagoloisirs.com` uniquement
 8. **Audit logs** : toute action sensible loguée (login, paiement, modif rôle, suppression)
-9. **Backups** : pg_dump quotidien chiffré → OVHcloud Object Storage, rétention 30j
+9. **Backups** : pg_dump quotidien chiffré → Cloudflare R2 (`R2_BACKUP_BUCKET`), rétention 30j
 10. **Secrets** : variables `.env` uniquement, jamais en dur dans le code, `.env` dans `.gitignore`
 
 ---
@@ -282,12 +282,14 @@ JWT_REFRESH_EXPIRY=7d
 # Resend (expéditeur : noreply@carthagoloisirs.com, constante MAIL_FROM)
 RESEND_API_KEY=re_...
 
-# OVHcloud Object Storage (S3-compatible)
-OVH_S3_ENDPOINT=https://s3.gra.io.cloud.ovh.net
-OVH_S3_BUCKET=cls-travel-media
-OVH_S3_ACCESS_KEY=...
-OVH_S3_SECRET_KEY=...
-OVH_S3_REGION=gra
+# Cloudflare R2 (S3-compatible)
+R2_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+R2_BUCKET=cls-travel-media
+R2_ACCESS_KEY=
+R2_SECRET_KEY=
+R2_REGION=auto
+R2_PUBLIC_URL=
+R2_BACKUP_BUCKET=cls-travel-backups
 
 # Google Maps
 NEXT_PUBLIC_GMAPS_KEY=...

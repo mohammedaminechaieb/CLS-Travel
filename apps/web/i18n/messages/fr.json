@@ -665,7 +665,7 @@
         },
         {
           "title": "Hébergement",
-          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Les médias sont stockés sur OVHcloud Object Storage (région Gravelines)."
+          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Les médias et les sauvegardes chiffrées sont stockés sur Cloudflare R2 (Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis)."
         },
         {
           "title": "Propriété intellectuelle",
@@ -691,7 +691,7 @@
         },
         {
           "title": "Destinataires",
-          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Resend pour les emails)."
+          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Cloudflare R2 pour le stockage des médias et des sauvegardes, Resend pour les emails)."
         },
         {
           "title": "Durée de conservation",

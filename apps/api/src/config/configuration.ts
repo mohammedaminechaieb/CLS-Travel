@@ -22,12 +22,13 @@ export default () => ({
   resend: {
     apiKey: process.env.RESEND_API_KEY ?? '',
   },
-  s3: {
-    endpoint: process.env.OVH_S3_ENDPOINT ?? '',
-    bucket: process.env.OVH_S3_BUCKET ?? '',
-    accessKey: process.env.OVH_S3_ACCESS_KEY ?? '',
-    secretKey: process.env.OVH_S3_SECRET_KEY ?? '',
-    region: process.env.OVH_S3_REGION ?? 'gra',
-    publicUrl: process.env.OVH_S3_PUBLIC_URL ?? '',
+  // Cloudflare R2 (API compatible S3)
+  r2: {
+    endpoint: process.env.R2_ENDPOINT ?? '',
+    bucket: process.env.R2_BUCKET ?? '',
+    accessKey: process.env.R2_ACCESS_KEY ?? '',
+    secretKey: process.env.R2_SECRET_KEY ?? '',
+    region: process.env.R2_REGION || 'auto',
+    publicUrl: process.env.R2_PUBLIC_URL ?? '',
   },
 });

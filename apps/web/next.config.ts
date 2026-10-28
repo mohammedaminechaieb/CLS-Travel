@@ -12,7 +12,9 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@cls/shared'],
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: '**.cloud.ovh.net' },
+      // Médias Cloudflare R2 : sous-domaine r2.dev ou domaine personnalisé (ex. media.carthagoloisirs.com)
+      { protocol: 'https', hostname: '**.r2.dev' },
+      { protocol: 'https', hostname: '**.carthagoloisirs.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },

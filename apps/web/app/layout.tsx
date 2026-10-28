@@ -1,16 +1,22 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { SITE_URL } from '@/lib/config';
+import { Providers } from '@/lib/providers';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair', display: 'swap' });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://carthagoloisirs.com'),
-  title: { default: 'CLS Travel — Agence de voyage en Tunisie', template: '%s | CLS Travel' },
-  description:
-    'CLS Travel (Carthago Loisirs) : circuits, séjours, excursions, Omra et voyages d’affaires au départ de la Tunisie.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('meta');
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: t('title'), template: '%s | CLS Travel' },
+    description: t('description'),
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [
@@ -19,10 +25,15 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
-    <html lang="fr" dir="ltr" className={`${inter.variable} ${playfair.variable}`}>
-      <body>{children}</body>
+    <html lang={locale} dir="ltr" className={`${inter.variable} ${playfair.variable}`}>
+      <body className="flex min-h-screen flex-col">
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

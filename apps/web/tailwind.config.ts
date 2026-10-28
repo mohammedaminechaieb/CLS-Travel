@@ -42,8 +42,14 @@ const config: Config = {
       borderRadius: { lg: '0.75rem', md: '0.5rem', sm: '0.375rem' },
       keyframes: {
         'fade-in': { from: { opacity: '0' }, to: { opacity: '1' } },
+        'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },
+        'accordion-up': { from: { height: 'var(--radix-accordion-content-height)' }, to: { height: '0' } },
       },
-      animation: { 'fade-in': 'fade-in 0.3s ease-out' },
+      animation: {
+        'fade-in': 'fade-in 0.3s ease-out',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+      },
     },
   },
   plugins: [animate],

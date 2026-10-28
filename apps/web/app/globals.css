@@ -30,6 +30,8 @@
   --color-danger-rgb: 180 35 24;
 
   --radius: 0.75rem;
+  /* Surchargée par next/font quand la locale arabe est chargée */
+  --font-arabic: 'Noto Sans Arabic';
   color-scheme: light;
 }
 

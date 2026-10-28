@@ -8,6 +8,8 @@ import { SmartImage } from '@/components/smart-image';
 import { TiptapRenderer } from '@/components/tiptap-renderer';
 import { tr } from '@/lib/i18n';
 import { serverFetchOrNotFound } from '@/lib/server-api';
+import { JsonLd } from '@/components/seo/json-ld';
+import { blogPostingSchema } from '@/lib/seo';
 
 export const revalidate = 300;
 type Props = { params: Promise<{ slug: string }> };
@@ -21,10 +23,22 @@ async function getPost(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost((await params).slug);
   const locale = await getLocale();
+  const title = tr(post, 'title', locale);
+  const description = tr(post, 'excerpt', locale) || undefined;
   return {
-    title: tr(post, 'title', locale),
-    description: tr(post, 'excerpt', locale) || undefined,
+    title,
+    description,
     alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      publishedTime: post.published_at ?? undefined,
+      modifiedTime: post.updated_at,
+      authors: [`${post.author.first_name} ${post.author.last_name}`],
+      tags: post.tags,
+    },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
 
@@ -37,6 +51,7 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <article className="pb-16">
+      <JsonLd data={blogPostingSchema(post, locale)} />
       <header className="container-content max-w-3xl pt-10 md:pt-14">
         <Link href="/blog" className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
           <ArrowLeft className="size-4 rtl:rotate-180" aria-hidden /> {t('backToBlog')}

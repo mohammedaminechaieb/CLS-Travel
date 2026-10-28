@@ -1,6 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { Footer } from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navbar';
+import { JsonLd } from '@/components/seo/json-ld';
+import { travelAgencySchema } from '@/lib/seo';
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations('common');
@@ -14,6 +16,7 @@ export default async function PublicLayout({ children }: { children: React.React
         {children}
       </main>
       <Footer />
+      <JsonLd data={travelAgencySchema()} />
     </>
   );
 }

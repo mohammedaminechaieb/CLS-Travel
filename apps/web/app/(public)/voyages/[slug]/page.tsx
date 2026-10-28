@@ -13,6 +13,8 @@ import { RatingStars } from '@/components/packages/rating-stars';
 import { Badge } from '@/components/ui/badge';
 import { tr } from '@/lib/i18n';
 import { serverFetch, serverFetchOrNotFound } from '@/lib/server-api';
+import { JsonLd } from '@/components/seo/json-ld';
+import { breadcrumbSchema, touristTripSchema } from '@/lib/seo';
 
 export const revalidate = 300;
 
@@ -30,7 +32,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = await getLocale();
   const title = tr(pkg, 'title', locale);
   const description = tr(pkg, 'description', locale).slice(0, 160);
-  return { title, description, alternates: { canonical: `/voyages/${pkg.slug}` } };
+  return {
+    title,
+    description,
+    alternates: { canonical: `/voyages/${pkg.slug}` },
+    openGraph: { type: 'website', title, description, url: `/voyages/${pkg.slug}` },
+    twitter: { card: 'summary_large_image', title, description },
+  };
 }
 
 export default async function PackagePage({ params }: Props) {
@@ -48,6 +56,16 @@ export default async function PackagePage({ params }: Props) {
 
   return (
     <div className="pb-24 lg:pb-16">
+      <JsonLd
+        data={[
+          touristTripSchema(pkg, locale),
+          breadcrumbSchema([
+            { name: tn('home'), path: '/' },
+            { name: tn('trips'), path: '/voyages' },
+            { name: title, path: `/voyages/${pkg.slug}` },
+          ]),
+        ]}
+      />
       <div className="container-content pt-6">
         <nav aria-label={t('breadcrumb')} className="mb-4 text-sm text-text-muted">
           <ol className="flex flex-wrap items-center gap-1">

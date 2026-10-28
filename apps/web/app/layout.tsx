@@ -15,10 +15,25 @@ const kufiArabic = Noto_Kufi_Arabic({ subsets: ['arabic'], variable: '--font-ara
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('meta');
+  const locale = await getLocale();
   return {
     metadataBase: new URL(SITE_URL),
     title: { default: t('title'), template: '%s | CLS Travel' },
     description: t('description'),
+    applicationName: 'CLS Travel',
+    keywords: ['agence de voyage Tunisie', 'circuit Tunisie', 'Omra', 'Djerba', 'Sahara', 'voyage organisé', 'Carthago Loisirs'],
+    alternates: { canonical: '/' },
+    openGraph: {
+      type: 'website',
+      siteName: 'CLS Travel',
+      locale: { fr: 'fr_TN', ar: 'ar_TN', en: 'en_GB' }[locale] ?? 'fr_TN',
+      url: SITE_URL,
+      title: t('title'),
+      description: t('description'),
+    },
+    twitter: { card: 'summary_large_image', title: t('title'), description: t('description') },
+    formatDetection: { telephone: false },
+    robots: { index: true, follow: true, 'max-image-preview': 'large' },
   };
 }
 

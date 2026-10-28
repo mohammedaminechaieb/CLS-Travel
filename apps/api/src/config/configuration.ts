@@ -11,6 +11,7 @@ export default () => ({
     .map((o) => o.trim())
     .filter(Boolean),
   cookieDomain: process.env.COOKIE_DOMAIN || undefined,
+  chromiumPath: process.env.CHROMIUM_PATH ?? '/usr/bin/chromium-browser',
   redisUrl: process.env.REDIS_URL ?? 'redis://localhost:6379',
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET ?? '',

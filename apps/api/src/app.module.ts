@@ -14,6 +14,7 @@ import { RolesGuard } from './common/guards/roles.guard';
 import configuration from './config/configuration';
 import { validateEnv } from './config/env.validation';
 import { DestinationsModule } from './destinations/destinations.module';
+import { DocumentsModule } from './documents/documents.module';
 import { HealthController } from './health/health.controller';
 import { MailModule } from './mail/mail.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
@@ -59,6 +60,7 @@ import { UsersModule } from './users/users.module';
     NotificationsModule,
     AnalyticsModule,
     NewsletterModule,
+    DocumentsModule,
   ],
   controllers: [HealthController],
   providers: [

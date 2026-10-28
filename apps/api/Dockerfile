@@ -19,8 +19,10 @@ RUN pnpm --filter @cls/shared build \
 
 # ---- runtime ----
 FROM node:20-alpine AS runtime
-RUN apk add --no-cache openssl wget
-ENV NODE_ENV=production
+# Chromium + polices pour la génération PDF (Puppeteer)
+RUN apk add --no-cache openssl wget chromium nss freetype harfbuzz ttf-freefont font-noto font-noto-arabic
+ENV NODE_ENV=production \
+    CHROMIUM_PATH=/usr/bin/chromium-browser
 WORKDIR /app
 COPY --from=build --chown=node:node /out ./
 USER node

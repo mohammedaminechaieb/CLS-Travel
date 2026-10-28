@@ -4,7 +4,7 @@ import type { AppNotification, Paginated } from '@cls/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useFormatter, useNow, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/lib/auth/auth-provider';
@@ -16,6 +16,7 @@ type NotificationsResponse = Paginated<AppNotification> & { unread: number };
 export function NotificationBell() {
   const t = useTranslations('notifications');
   const format = useFormatter();
+  const now = useNow({ updateInterval: 60_000 });
   const { request } = useAuth();
   const qc = useQueryClient();
   const { data } = useApiQuery<NotificationsResponse>(['notifications'], '/notifications', { limit: 8 }, { refetchInterval: 60_000 });
@@ -47,7 +48,7 @@ export function NotificationBell() {
             <DropdownMenuItem key={n.id} asChild>
               <Link href={bookingId ? `/mes-reservations/${bookingId}` : '/espace-client'} className={cn('flex-col items-start gap-0.5', !n.is_read && 'bg-primary/5')}>
                 <span className="text-sm font-medium">{t(`types.${n.type}` as 'types.BOOKING_CREATED', { reference: String(n.payload.reference ?? '') })}</span>
-                <span className="text-xs text-text-muted">{format.relativeTime(new Date(n.created_at))}</span>
+                <span className="text-xs text-text-muted">{format.relativeTime(new Date(n.created_at), now)}</span>
               </Link>
             </DropdownMenuItem>
           );

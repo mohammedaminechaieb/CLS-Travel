@@ -290,5 +290,89 @@
       "dob": "Date de naissance invalide",
       "cgv": "Vous devez accepter les conditions générales"
     }
+  },
+  "client": {
+    "nav": "Espace client",
+    "dashboard": "Tableau de bord",
+    "bookings": "Mes réservations",
+    "profile": "Mon profil",
+    "hello": "Bonjour {name} 👋",
+    "dashboardSubtitle": "Retrouvez vos voyages, paiements et échanges avec votre conseiller.",
+    "stats": {
+      "upcoming": "Voyages à venir",
+      "toPay": "Reste à régler",
+      "unread": "Messages non lus"
+    },
+    "nextTrip": "Votre prochain voyage",
+    "daysLeft": "{count, plural, =0 {Départ aujourd’hui !} one {Départ demain} other {Départ dans # jours}}",
+    "noBookings": "Vous n’avez pas encore de réservation.",
+    "exploreTrips": "Découvrir nos voyages",
+    "recent": "Réservations récentes",
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "cancelled": "Annulée",
+      "completed": "Terminée"
+    },
+    "reference": "Référence",
+    "viewDetails": "Voir le détail",
+    "paidOf": "{paid} réglés sur {total}",
+    "unreadBadge": "{count, plural, one {# nouveau message} other {# nouveaux messages}}",
+    "detail": {
+      "back": "Mes réservations",
+      "trip": "Votre voyage",
+      "dates": "Du {from} au {to}",
+      "travelers": "Voyageurs",
+      "payments": "Historique des paiements",
+      "noPayments": "Aucun paiement pour le moment.",
+      "payBalance": "Régler maintenant",
+      "payTitle": "Paiement",
+      "documents": "Documents",
+      "confirmation": "Confirmation de réservation (PDF)",
+      "invoice": "Facture (PDF)",
+      "downloadError": "Téléchargement impossible pour le moment.",
+      "agent": "Votre conseiller",
+      "noAgent": "Un conseiller vous sera attribué très prochainement.",
+      "messages": "Messagerie",
+      "messagePlaceholder": "Écrivez votre message…",
+      "send": "Envoyer",
+      "noMessages": "Posez vos questions à votre conseiller : il vous répond sous 24 h ouvrées.",
+      "you": "Vous",
+      "cancel": "Annuler la réservation",
+      "cancelConfirm": "Annuler définitivement cette réservation ?",
+      "cancelled": "Réservation annulée",
+      "paymentProcessing": "Paiement en cours de validation. Votre réservation sera mise à jour dans quelques instants.",
+      "reviewTitle": "Votre avis",
+      "reviewText": "Comment s’est passé votre voyage ?",
+      "reviewComment": "Votre commentaire",
+      "reviewSubmit": "Publier mon avis",
+      "reviewThanks": "Merci ! Votre avis sera publié après modération.",
+      "rating": "Note",
+      "ratingValue": "{count, plural, one {# étoile} other {# étoiles}}",
+      "paymentStatus": {
+        "pending": "En attente",
+        "succeeded": "Réussi",
+        "failed": "Échoué",
+        "refunded": "Remboursé"
+      },
+      "paymentType": {
+        "deposit": "Acompte",
+        "balance": "Solde",
+        "full": "Totalité"
+      },
+      "paid": "Réglé",
+      "total": "Total"
+    },
+    "profileForm": {
+      "title": "Mon profil",
+      "personal": "Informations personnelles",
+      "security": "Sécurité",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "saved": "Profil mis à jour",
+      "verifyBanner": "Votre adresse email n’est pas encore vérifiée.",
+      "resend": "Renvoyer l’email",
+      "resent": "Email de vérification envoyé"
+    }
   }
 }

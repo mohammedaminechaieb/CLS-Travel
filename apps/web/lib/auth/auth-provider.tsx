@@ -3,6 +3,7 @@
 import type { AuthResponse, PublicUser } from '@cls/shared';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, apiFetch, type RequestOptions } from '../api-client';
+import { API_URL } from '../config';
 
 type Status = 'loading' | 'authenticated' | 'anonymous';
 
@@ -23,6 +24,8 @@ interface AuthContextValue {
   setUser: (user: PublicUser) => void;
   /** Requête authentifiée : ajoute le Bearer et rafraîchit la session une fois sur 401. */
   request: <T>(path: string, opts?: RequestOptions) => Promise<T>;
+  /** Télécharge un fichier protégé (PDF) et déclenche l'enregistrement côté navigateur. */
+  download: (path: string, filename: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -89,6 +92,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [refresh],
   );
 
+  const download = useCallback(
+    async (path: string, filename: string) => {
+      const get = (token: string | null) =>
+        fetch(`${API_URL}${path}`, { credentials: 'include', headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      let res = await get(tokenRef.current);
+      if (res.status === 401) res = await get(await refresh());
+      if (!res.ok) throw new ApiError(res.status, res.statusText);
+      const url = URL.createObjectURL(await res.blob());
+      const a = Object.assign(document.createElement('a'), { href: url, download: filename });
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    },
+    [refresh],
+  );
+
   const login = useCallback(
     async (email: string, password: string) =>
       applySession(await apiFetch<AuthResponse>('/auth/login', { method: 'POST', body: { email, password } })),
@@ -109,8 +129,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [clearSession]);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status, user, login, register, logout, request, setUser: setUserState }),
-    [status, user, login, register, logout, request],
+    () => ({ status, user, login, register, logout, request, download, setUser: setUserState }),
+    [status, user, login, register, logout, request, download],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

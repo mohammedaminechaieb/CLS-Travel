@@ -25,9 +25,6 @@ export const CURRENCIES = ['TND', 'EUR', 'USD'] as const;
 export type Currency = (typeof CURRENCIES)[number];
 export const BASE_CURRENCY: Currency = 'TND';
 
-/** Pourcentage d'acompte par défaut (surchargé par STRIPE_DEPOSIT_PERCENT côté API). */
-export const DEFAULT_DEPOSIT_PERCENT = 30;
-
 /** Format de référence de réservation : CLS-YYYY-NNNNN */
 export const BOOKING_REFERENCE_REGEX = /^CLS-\d{4}-\d{5}$/;
 

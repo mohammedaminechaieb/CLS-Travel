@@ -39,6 +39,6 @@ tests → images `ghcr.io/<owner>/cls-travel/{api,web}` → déploiement SSH →
 
 Secrets GitHub : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_SSH_KNOWN_HOSTS`.
 Variables GitHub : `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GMAPS_KEY`,
-`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `VPS_APP_DIR`.
+`VPS_APP_DIR`.
 
 Voir `CLAUDE.md` pour les conventions, le schéma de données et les règles de sécurité.

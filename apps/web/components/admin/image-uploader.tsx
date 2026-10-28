@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth/auth-provider';
 
-/** Envoi d'images vers OVHcloud Object Storage via POST /admin/media/:folder. */
+/** Envoi d'images vers Cloudflare R2 via POST /admin/media/:folder. */
 export function ImageUploader({
   value,
   onChange,

@@ -305,7 +305,7 @@ model BookingSequence {
   @@map("booking_sequences")
 }
 
-/// Événements Stripe déjà traités — garantit l'idempotence du webhook.
+/// Événements Stripe déjà traités — inutilisée tant que le paiement en ligne est différé (Stripe retiré).
 model StripeEvent {
   id           String   @id // evt_...
   type         String

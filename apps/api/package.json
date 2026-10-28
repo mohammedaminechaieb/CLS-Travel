@@ -55,8 +55,7 @@
     "puppeteer-core": "^23",
     "reflect-metadata": "^0.2.2",
     "resend": "^6.35.0",
-    "rxjs": "^7.8.2",
-    "stripe": "^17"
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^11",

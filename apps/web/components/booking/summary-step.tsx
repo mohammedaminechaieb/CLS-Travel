@@ -1,6 +1,6 @@
 'use client';
 
-import { DEFAULT_DEPOSIT_PERCENT, type PromoValidation } from '@cls/shared';
+import type { PromoValidation } from '@cls/shared';
 import { useMutation } from '@tanstack/react-query';
 import { Tag, X } from 'lucide-react';
 import Link from 'next/link';
@@ -52,7 +52,6 @@ export function SummaryStep({
   const subtotal = Number(pkg.base_price) * count;
   const discount = promo ? Number(promo.discount) : 0;
   const total = subtotal - discount;
-  const deposit = Math.round(total * DEFAULT_DEPOSIT_PERCENT * 10) / 1000;
   const departure = new Date(value.departure_date);
   const ret = new Date(departure.getTime() + (pkg.duration_days - 1) * 86_400_000);
 
@@ -108,9 +107,8 @@ export function SummaryStep({
           {discount > 0 && <Row label={t('discount')} value={`− ${money(discount)}`} className="text-success" />}
           <div className="my-1 border-t border-border" />
           <Row label={t('total')} value={money(total)} strong />
-          <Row label={t('depositToday', { percent: DEFAULT_DEPOSIT_PERCENT })} value={money(deposit)} className="text-cta" />
-          <Row label={t('balanceLater')} value={money(total - deposit)} />
         </dl>
+        <p className="mt-4 rounded-md bg-muted/60 px-4 py-3 text-sm text-text-muted">{t('paymentLater')}</p>
       </section>
 
       <div className="flex flex-col gap-1">

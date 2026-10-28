@@ -99,8 +99,8 @@
     "trustTitle": "Why choose CLS Travel?",
     "trustLicensed": "Licensed agency",
     "trustLicensedText": "Licensed by the Tunisian National Tourist Office",
-    "trustPayment": "Secure payment",
-    "trustPaymentText": "Only a 30% deposit, card payment via Stripe",
+    "trustPayment": "Simple booking",
+    "trustPaymentText": "Instant online confirmation, payment arranged with your advisor",
     "trustSupport": "Support 7 days a week",
     "trustSupportText": "A dedicated advisor and messaging throughout your trip",
     "trustExperience": "Local experts",
@@ -179,15 +179,14 @@
     "departureDate": "Departure date",
     "travelers": "Number of travelers",
     "estimatedTotal": "Estimated total",
-    "deposit": "Deposit on booking ({percent}%)",
-    "depositNote": "Pay only {percent}% today, the balance before departure.",
     "bookCta": "Book now",
     "questions": "Any questions? Contact an advisor",
     "capacity": "{count} people maximum",
     "duration": "Duration",
     "category": "Type",
     "destination": "Destination",
-    "group": "Group"
+    "group": "Group",
+    "noPaymentNote": "Instant confirmation, no online payment: you settle directly with your advisor."
   },
   "auth": {
     "loginTitle": "Log in",
@@ -242,7 +241,7 @@
     "steps": {
       "participants": "Travelers",
       "summary": "Summary",
-      "payment": "Payment"
+      "confirmation": "Confirmation"
     },
     "stepOf": "Step {current} of {total}",
     "loginRequired": "Log in to book",
@@ -273,32 +272,21 @@
     "subtotal": "Subtotal",
     "discount": "Discount",
     "total": "Total",
-    "depositToday": "Deposit ({percent}%)",
-    "balanceLater": "Balance before departure",
     "acceptCgv": "I have read and accept the <link>terms and conditions of sale</link>",
     "confirm": "Confirm booking",
     "created": "Booking {reference} recorded",
-    "paymentTitle": "Secure payment",
-    "paymentChoice": "What would you like to pay?",
-    "payDeposit": "{percent}% deposit",
-    "payDepositText": "{amount} today, the balance later",
-    "payFull": "Full amount",
-    "payFullText": "{amount} in one payment",
-    "payBalance": "Remaining balance",
-    "payBalanceText": "{amount} to complete",
-    "payCta": "Pay {amount}",
-    "charged": "Amount charged: {amount} (converted from TND)",
-    "secure": "Payment encrypted by Stripe. Your card details never pass through our servers.",
-    "stripeUnavailable": "Online payment is not configured yet. Your booking is recorded: your advisor will contact you about payment.",
     "goToBooking": "View my booking",
-    "paymentError": "Payment failed: {message}",
-    "preparing": "Preparing payment…",
     "errors": {
       "date": "Choose a departure date from tomorrow",
       "passport": "6 to 12 characters (letters and digits)",
       "dob": "Invalid date of birth",
       "cgv": "You must accept the terms and conditions"
-    }
+    },
+    "confirmedTitle": "Your booking is confirmed!",
+    "confirmedText": "A confirmation email has just been sent. Your advisor will contact you about payment arrangements — no online payment is required.",
+    "reference": "Reference",
+    "backToTrips": "See other trips",
+    "paymentLater": "No online payment: your CLS Travel advisor will send you the payment arrangements after confirmation."
   },
   "client": {
     "nav": "Client area",
@@ -334,8 +322,6 @@
       "travelers": "Travelers",
       "payments": "Payment history",
       "noPayments": "No payments yet.",
-      "payBalance": "Pay now",
-      "payTitle": "Payment",
       "documents": "Documents",
       "confirmation": "Booking confirmation (PDF)",
       "invoice": "Invoice (PDF)",
@@ -350,7 +336,6 @@
       "cancel": "Cancel booking",
       "cancelConfirm": "Permanently cancel this booking?",
       "cancelled": "Booking cancelled",
-      "paymentProcessing": "Payment is being confirmed. Your booking will update in a few moments.",
       "reviewTitle": "Your review",
       "reviewText": "How was your trip?",
       "reviewComment": "Your comment",
@@ -634,15 +619,15 @@
       "sections": [
         {
           "title": "1. Booking",
-          "body": "Any booking made on carthagoloisirs.com requires a client account and acceptance of these terms. The booking is recorded when the summary is validated and becomes firm once the deposit is paid."
+          "body": "Any booking made on carthagoloisirs.com requires a client account and acceptance of these terms. The booking is confirmed as soon as the summary is validated, subject to availability."
         },
         {
           "title": "2. Prices",
-          "body": "Prices are in Tunisian dinars (TND), per person, all taxes included. They cover the services listed under “What’s included” for each offer. Card payments may be charged in another currency (EUR) at the rate shown before validation."
+          "body": "Prices are in Tunisian dinars (TND), per person, all taxes included. They cover the services listed under “What’s included” for each offer."
         },
         {
           "title": "3. Payment terms",
-          "body": "A deposit of 30% of the total is required on booking. The balance must be paid no later than 30 days before departure. For bookings made less than 30 days before departure, the full price is due immediately. Online payments are processed by Stripe: CLS Travel does not store any card data."
+          "body": "No payment is collected online. Once the booking is confirmed, your advisor sends you the payment terms and schedule (cash, bank transfer or card at the agency). The balance must be paid no later than 30 days before departure."
         },
         {
           "title": "4. Cancellation by the client",
@@ -680,7 +665,7 @@
         },
         {
           "title": "Hosting",
-          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Media files are stored on OVHcloud Object Storage (Gravelines region)."
+          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Media files and encrypted backups are stored on Cloudflare R2 (Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA)."
         },
         {
           "title": "Intellectual property",
@@ -688,7 +673,7 @@
         },
         {
           "title": "Payment",
-          "body": "Online payments are operated by Stripe Payments Europe Ltd. No card data is stored by CLS Travel."
+          "body": "No payment is made on the website: payments are made directly with the agency. CLS Travel does not collect any card data online."
         }
       ]
     },
@@ -698,7 +683,7 @@
       "sections": [
         {
           "title": "Data collected",
-          "body": "Identity and contact details (name, email, phone), traveler information needed for the booking (passport, date of birth), booking and payment history, and exchanges with our advisors. Card details are entered directly with Stripe and never sent to us."
+          "body": "Identity and contact details (name, email, phone), traveler information needed for the booking (passport, date of birth), booking and payment history, and exchanges with our advisors. No card data is collected on the website."
         },
         {
           "title": "Purposes",
@@ -706,7 +691,7 @@
         },
         {
           "title": "Recipients",
-          "body": "Our authorised advisors, our travel partners (airlines, hotels, ground handlers) strictly as needed, and our technical processors (OVHcloud for hosting, Stripe for payment, Resend for emails)."
+          "body": "Our authorised advisors, our travel partners (airlines, hotels, ground handlers) strictly as needed, and our technical processors (OVHcloud for hosting, Cloudflare R2 for media and backup storage, Resend for emails)."
         },
         {
           "title": "Retention period",

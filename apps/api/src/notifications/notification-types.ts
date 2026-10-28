@@ -5,8 +5,6 @@ export const NOTIFICATION_TYPES = {
   bookingCompleted: 'BOOKING_COMPLETED',
   bookingAssigned: 'BOOKING_ASSIGNED',
   newBooking: 'NEW_BOOKING', // staff
-  paymentReceived: 'PAYMENT_RECEIVED',
-  paymentFailed: 'PAYMENT_FAILED',
   newMessage: 'NEW_MESSAGE',
 } as const;
 

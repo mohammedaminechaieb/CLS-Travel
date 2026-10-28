@@ -16,6 +16,15 @@ const STAFF_ROLES: Role[] = [Role.super_admin, Role.manager, Role.agent];
 const ADMIN_ROLES: Role[] = [Role.super_admin, Role.manager];
 const DAY_MS = 86_400_000;
 
+/**
+ * Paiement en ligne différé à une phase ultérieure : une réservation valide est confirmée
+ * dès sa création (le règlement se fait auprès du conseiller). Remettre `pending` ici
+ * lorsqu'un paiement sera de nouveau requis avant confirmation.
+ */
+export const INITIAL_BOOKING_STATUS: BookingStatus = BookingStatus.confirmed;
+/** Statuts annulables en ligne par le client tant que rien n'a été réglé. */
+const CLIENT_CANCELLABLE: BookingStatus[] = [BookingStatus.pending, BookingStatus.confirmed];
+
 const PACKAGE_SUMMARY = {
   select: {
     id: true,
@@ -92,6 +101,7 @@ export class BookingsService {
           total_price: subtotal.sub(discount),
           discount_amount: discount,
           promo_code_id: adjustment.promoCodeId,
+          status: INITIAL_BOOKING_STATUS,
         },
         include: { package: PACKAGE_SUMMARY },
       });
@@ -154,8 +164,9 @@ export class BookingsService {
   async cancelByClient(id: string, user: AuthUser, meta: RequestMeta) {
     const booking = await this.prisma.booking.findUnique({ where: { id } });
     if (!booking || booking.user_id !== user.id) throw new NotFoundException('Réservation introuvable');
-    if (booking.status !== BookingStatus.pending || !booking.paid_amount.isZero()) {
-      throw new BadRequestException('Seule une réservation en attente et non payée peut être annulée en ligne. Contactez votre agent.');
+    const departed = booking.departure_date.getTime() <= Date.now();
+    if (!CLIENT_CANCELLABLE.includes(booking.status) || !booking.paid_amount.isZero() || departed) {
+      throw new BadRequestException('Cette réservation ne peut plus être annulée en ligne. Contactez votre conseiller.');
     }
     return this.applyStatus(booking.id, booking.status, BookingStatus.cancelled, user.id, meta, 'Annulée par le client');
   }

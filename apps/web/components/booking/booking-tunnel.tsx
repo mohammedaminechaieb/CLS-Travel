@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { ParticipantsStep, type ParticipantsValue } from './participants-step';
-import { PaymentStep } from './payment-step';
+import { ConfirmationStep } from './confirmation-step';
 import { Stepper } from './stepper';
 import { SummaryStep } from './summary-step';
 
@@ -93,7 +93,7 @@ export function BookingTunnel({ pkg }: { pkg: TunnelPackage }) {
     })),
   };
 
-  const titles = [t('participantsTitle'), t('summaryTitle'), t('paymentTitle')];
+  const titles = [t('participantsTitle'), t('summaryTitle'), t('confirmedTitle')];
 
   return (
     <div>
@@ -124,7 +124,7 @@ export function BookingTunnel({ pkg }: { pkg: TunnelPackage }) {
         />
       )}
       {step === 2 && booking && (
-        <PaymentStep bookingId={booking.id} total={Number(booking.total_price)} paid={Number(booking.paid_amount)} />
+        <ConfirmationStep booking={booking} />
       )}
     </div>
   );

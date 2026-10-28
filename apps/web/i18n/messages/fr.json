@@ -99,8 +99,8 @@
     "trustTitle": "Pourquoi choisir CLS Travel ?",
     "trustLicensed": "Agence agréée",
     "trustLicensedText": "Licence de l’Office National du Tourisme Tunisien",
-    "trustPayment": "Paiement sécurisé",
-    "trustPaymentText": "Acompte de 30 % seulement, paiement par carte via Stripe",
+    "trustPayment": "Réservation simple",
+    "trustPaymentText": "Confirmation immédiate en ligne, règlement auprès de votre conseiller",
     "trustSupport": "Accompagnement 7j/7",
     "trustSupportText": "Un conseiller dédié et une messagerie pendant tout le voyage",
     "trustExperience": "Experts locaux",
@@ -179,15 +179,14 @@
     "departureDate": "Date de départ",
     "travelers": "Nombre de voyageurs",
     "estimatedTotal": "Total estimé",
-    "deposit": "Acompte à la réservation ({percent} %)",
-    "depositNote": "Réglez seulement {percent} % aujourd’hui, le solde avant le départ.",
     "bookCta": "Réserver maintenant",
     "questions": "Une question ? Contactez un conseiller",
     "capacity": "{count} personnes maximum",
     "duration": "Durée",
     "category": "Type",
     "destination": "Destination",
-    "group": "Groupe"
+    "group": "Groupe",
+    "noPaymentNote": "Confirmation immédiate, sans paiement en ligne : le règlement se fait auprès de votre conseiller."
   },
   "auth": {
     "loginTitle": "Connexion",
@@ -242,7 +241,7 @@
     "steps": {
       "participants": "Voyageurs",
       "summary": "Récapitulatif",
-      "payment": "Paiement"
+      "confirmation": "Confirmation"
     },
     "stepOf": "Étape {current} sur {total}",
     "loginRequired": "Connectez-vous pour réserver",
@@ -273,32 +272,21 @@
     "subtotal": "Sous-total",
     "discount": "Remise",
     "total": "Total",
-    "depositToday": "Acompte ({percent} %)",
-    "balanceLater": "Solde avant le départ",
     "acceptCgv": "J’ai lu et j’accepte les <link>conditions générales de vente</link>",
     "confirm": "Confirmer la réservation",
     "created": "Réservation {reference} enregistrée",
-    "paymentTitle": "Paiement sécurisé",
-    "paymentChoice": "Que souhaitez-vous régler ?",
-    "payDeposit": "Acompte de {percent} %",
-    "payDepositText": "{amount} aujourd’hui, le solde plus tard",
-    "payFull": "Totalité",
-    "payFullText": "{amount} en une fois",
-    "payBalance": "Solde restant",
-    "payBalanceText": "{amount} pour finaliser",
-    "payCta": "Payer {amount}",
-    "charged": "Montant débité : {amount} (taux de conversion appliqué depuis le TND)",
-    "secure": "Paiement chiffré par Stripe. Vos données bancaires ne transitent jamais par nos serveurs.",
-    "stripeUnavailable": "Le paiement en ligne n’est pas encore configuré. Votre réservation est enregistrée : votre conseiller vous contactera pour le règlement.",
     "goToBooking": "Voir ma réservation",
-    "paymentError": "Le paiement n’a pas abouti : {message}",
-    "preparing": "Préparation du paiement…",
     "errors": {
       "date": "Choisissez une date de départ à partir de demain",
       "passport": "6 à 12 caractères (lettres et chiffres)",
       "dob": "Date de naissance invalide",
       "cgv": "Vous devez accepter les conditions générales"
-    }
+    },
+    "confirmedTitle": "Votre réservation est confirmée !",
+    "confirmedText": "Un email de confirmation vient de vous être envoyé. Votre conseiller vous contactera pour les modalités de règlement — aucun paiement en ligne n’est demandé.",
+    "reference": "Référence",
+    "backToTrips": "Voir d’autres voyages",
+    "paymentLater": "Aucun paiement en ligne : votre conseiller CLS Travel vous communiquera les modalités de règlement après confirmation."
   },
   "client": {
     "nav": "Espace client",
@@ -334,8 +322,6 @@
       "travelers": "Voyageurs",
       "payments": "Historique des paiements",
       "noPayments": "Aucun paiement pour le moment.",
-      "payBalance": "Régler maintenant",
-      "payTitle": "Paiement",
       "documents": "Documents",
       "confirmation": "Confirmation de réservation (PDF)",
       "invoice": "Facture (PDF)",
@@ -350,7 +336,6 @@
       "cancel": "Annuler la réservation",
       "cancelConfirm": "Annuler définitivement cette réservation ?",
       "cancelled": "Réservation annulée",
-      "paymentProcessing": "Paiement en cours de validation. Votre réservation sera mise à jour dans quelques instants.",
       "reviewTitle": "Votre avis",
       "reviewText": "Comment s’est passé votre voyage ?",
       "reviewComment": "Votre commentaire",
@@ -634,15 +619,15 @@
       "sections": [
         {
           "title": "1. Réservation",
-          "body": "Toute réservation effectuée sur carthagoloisirs.com nécessite la création d’un compte client et l’acceptation des présentes conditions. La réservation est enregistrée dès la validation du récapitulatif et devient ferme après le règlement de l’acompte."
+          "body": "Toute réservation effectuée sur carthagoloisirs.com nécessite la création d’un compte client et l’acceptation des présentes conditions. La réservation est confirmée dès la validation du récapitulatif, sous réserve de disponibilité."
         },
         {
           "title": "2. Prix",
-          "body": "Les prix sont exprimés en dinars tunisiens (TND), par personne, toutes taxes comprises. Ils comprennent les prestations listées dans la rubrique « Ce prix comprend » de chaque offre. Les paiements par carte peuvent être débités dans une autre devise (EUR) au taux indiqué avant validation."
+          "body": "Les prix sont exprimés en dinars tunisiens (TND), par personne, toutes taxes comprises. Ils comprennent les prestations listées dans la rubrique « Ce prix comprend » de chaque offre."
         },
         {
           "title": "3. Modalités de paiement",
-          "body": "Un acompte de 30 % du montant total est exigé à la réservation. Le solde doit être réglé au plus tard 30 jours avant la date de départ. Pour toute réservation effectuée moins de 30 jours avant le départ, la totalité du prix est exigible immédiatement. Les paiements en ligne sont traités par Stripe : CLS Travel ne conserve aucune donnée bancaire."
+          "body": "Aucun paiement n’est encaissé en ligne. Après confirmation de la réservation, votre conseiller vous communique les modalités et l’échéancier de règlement (espèces, virement ou carte en agence). Le solde doit être réglé au plus tard 30 jours avant la date de départ."
         },
         {
           "title": "4. Annulation par le client",
@@ -680,7 +665,7 @@
         },
         {
           "title": "Hébergement",
-          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Les médias sont stockés sur OVHcloud Object Storage (région Gravelines)."
+          "body": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — www.ovhcloud.com. Les médias et les sauvegardes chiffrées sont stockés sur Cloudflare R2 (Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis)."
         },
         {
           "title": "Propriété intellectuelle",
@@ -688,7 +673,7 @@
         },
         {
           "title": "Paiement",
-          "body": "Les paiements en ligne sont opérés par Stripe Payments Europe Ltd. Aucune donnée de carte bancaire n’est stockée par CLS Travel."
+          "body": "Aucun paiement n’est effectué sur le site : les règlements se font directement auprès de l’agence. CLS Travel ne collecte aucune donnée de carte bancaire en ligne."
         }
       ]
     },
@@ -698,7 +683,7 @@
       "sections": [
         {
           "title": "Données collectées",
-          "body": "Identité et coordonnées (nom, prénom, email, téléphone), informations des voyageurs nécessaires à la réservation (passeport, date de naissance), historique des réservations et paiements, échanges avec nos conseillers. Les données de carte bancaire sont saisies directement chez Stripe et ne nous sont jamais transmises."
+          "body": "Identité et coordonnées (nom, prénom, email, téléphone), informations des voyageurs nécessaires à la réservation (passeport, date de naissance), historique des réservations et règlements, échanges avec nos conseillers. Aucune donnée de carte bancaire n’est collectée sur le site."
         },
         {
           "title": "Finalités",
@@ -706,7 +691,7 @@
         },
         {
           "title": "Destinataires",
-          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Stripe pour le paiement, Resend pour les emails)."
+          "body": "Nos conseillers habilités, nos prestataires de voyage (compagnies aériennes, hôtels, réceptifs) dans la stricte mesure nécessaire, et nos sous-traitants techniques (OVHcloud pour l’hébergement, Cloudflare R2 pour le stockage des médias et des sauvegardes, Resend pour les emails)."
         },
         {
           "title": "Durée de conservation",

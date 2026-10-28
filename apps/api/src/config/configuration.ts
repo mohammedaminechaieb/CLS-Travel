@@ -19,22 +19,16 @@ export default () => ({
     accessExpiry: process.env.JWT_ACCESS_EXPIRY ?? '15m',
     refreshExpiry: process.env.JWT_REFRESH_EXPIRY ?? '7d',
   },
-  stripe: {
-    secretKey: process.env.STRIPE_SECRET_KEY ?? '',
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
-    depositPercent: parseInt(process.env.STRIPE_DEPOSIT_PERCENT ?? '30', 10),
-    currency: (process.env.STRIPE_CURRENCY ?? 'eur').toLowerCase(),
-    tndExchangeRate: parseFloat(process.env.STRIPE_TND_EXCHANGE_RATE ?? '0.30'),
-  },
   resend: {
     apiKey: process.env.RESEND_API_KEY ?? '',
   },
-  s3: {
-    endpoint: process.env.OVH_S3_ENDPOINT ?? '',
-    bucket: process.env.OVH_S3_BUCKET ?? '',
-    accessKey: process.env.OVH_S3_ACCESS_KEY ?? '',
-    secretKey: process.env.OVH_S3_SECRET_KEY ?? '',
-    region: process.env.OVH_S3_REGION ?? 'gra',
-    publicUrl: process.env.OVH_S3_PUBLIC_URL ?? '',
+  // Cloudflare R2 (API compatible S3)
+  r2: {
+    endpoint: process.env.R2_ENDPOINT ?? '',
+    bucket: process.env.R2_BUCKET ?? '',
+    accessKey: process.env.R2_ACCESS_KEY ?? '',
+    secretKey: process.env.R2_SECRET_KEY ?? '',
+    region: process.env.R2_REGION || 'auto',
+    publicUrl: process.env.R2_PUBLIC_URL ?? '',
   },
 });

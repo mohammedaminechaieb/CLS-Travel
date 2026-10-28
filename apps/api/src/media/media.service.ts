@@ -29,14 +29,17 @@ export class MediaService {
     private readonly config: ConfigService,
     private readonly audit: AuditService,
   ) {
-    const s3 = config.get('s3');
+    const r2 = config.get('r2');
     this.client =
-      s3.endpoint && s3.accessKey && s3.accessKey !== '...'
+      r2.endpoint && r2.accessKey && r2.secretKey
         ? new S3Client({
-            endpoint: s3.endpoint,
-            region: s3.region,
-            credentials: { accessKeyId: s3.accessKey, secretAccessKey: s3.secretKey },
-            forcePathStyle: false,
+            endpoint: r2.endpoint,
+            region: r2.region, // "auto" pour R2
+            credentials: { accessKeyId: r2.accessKey, secretAccessKey: r2.secretKey },
+            forcePathStyle: true,
+            // R2 : sommes de contrôle uniquement lorsqu'elles sont exigées (recommandation Cloudflare)
+            requestChecksumCalculation: 'WHEN_REQUIRED',
+            responseChecksumValidation: 'WHEN_REQUIRED',
           })
         : null;
   }
@@ -45,28 +48,28 @@ export class MediaService {
     return (FOLDERS as readonly string[]).includes(value);
   }
 
-  /** Envoie une image vers OVHcloud Object Storage et renvoie son URL publique. */
+  /** Envoie une image vers Cloudflare R2 et renvoie son URL publique (domaine public du bucket). */
   async upload(file: Express.Multer.File | undefined, folder: MediaFolder, actorId: string) {
     if (!file) throw new BadRequestException('Fichier manquant');
     if (file.size > MAX_UPLOAD_BYTES) throw new BadRequestException('Image trop lourde (5 Mo maximum)');
     const kind = sniffImage(file.buffer);
     if (!kind) throw new BadRequestException('Format non supporté (JPEG, PNG, WebP ou AVIF)');
-    if (!this.client) throw new ServiceUnavailableException('Stockage des médias non configuré');
+    const r2 = this.config.get('r2');
+    // Les URL d'API R2 (*.r2.cloudflarestorage.com) ne sont pas publiques : R2_PUBLIC_URL est requis
+    if (!this.client || !r2.publicUrl) throw new ServiceUnavailableException('Stockage des médias non configuré');
 
-    const s3 = this.config.get('s3');
     const now = new Date();
     const key = `${folder}/${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}/${randomUUID()}.${kind.ext}`;
     await this.client.send(
       new PutObjectCommand({
-        Bucket: s3.bucket,
+        Bucket: r2.bucket,
         Key: key,
         Body: file.buffer,
         ContentType: kind.mime,
-        ACL: 'public-read',
         CacheControl: 'public, max-age=31536000, immutable',
       }),
     );
-    const base = (s3.publicUrl || `${s3.endpoint}/${s3.bucket}`).replace(/\/$/, '');
+    const base = String(r2.publicUrl).replace(/\/$/, '');
     const url = `${base}/${key}`;
     await this.audit.log({ actorId, action: 'MEDIA_UPLOADED', resourceType: 'media', resourceId: key, payload: { size: file.size, mime: kind.mime } });
     return { url, key, size: file.size, mime: kind.mime };

@@ -8,15 +8,12 @@ import {
   type BookingCreatedEvent,
   type BookingMessageEvent,
   type BookingStatusChangedEvent,
-  type PaymentEvent,
 } from '../common/events/events';
 import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { emailTemplates, type BookingMailData } from './email-templates';
 import { NOTIFICATION_TYPES as T } from './notification-types';
 import { NotificationsService } from './notifications.service';
-
-const PAYMENT_LABEL = { deposit: 'acompte', balance: 'solde', full: 'règlement total' } as const;
 
 /**
  * Traduit les événements de domaine en notifications in-app + emails Resend.
@@ -58,31 +55,6 @@ export class NotificationsListener {
       const tpl =
         to === BookingStatus.confirmed ? emailTemplates.bookingConfirmed(data) : emailTemplates.bookingStatus(data, to as 'cancelled' | 'completed');
       await this.mail.send({ to: b.user.email, ...tpl });
-    });
-  }
-
-  @OnEvent(EVENTS.paymentSucceeded, { async: true, promisify: true })
-  async onPaymentSucceeded(e: PaymentEvent) {
-    await this.safely('payment.succeeded', async () => {
-      const b = await this.load(e.bookingId);
-      if (!b) return;
-      const payload = { booking_id: b.id, reference: b.reference, amount: e.amount, currency: e.currency, payment_type: e.type };
-      await this.notifications.create(b.user_id, T.paymentReceived, payload);
-      if (b.assigned_agent_id) await this.notifications.create(b.assigned_agent_id, T.paymentReceived, payload);
-      await this.mail.send({
-        to: b.user.email,
-        ...emailTemplates.paymentReceipt(this.mailData(b), e.amount, e.currency, PAYMENT_LABEL[e.type]),
-      });
-    });
-  }
-
-  @OnEvent(EVENTS.paymentFailed, { async: true, promisify: true })
-  async onPaymentFailed(e: PaymentEvent) {
-    await this.safely('payment.failed', async () => {
-      const b = await this.load(e.bookingId);
-      if (!b) return;
-      await this.notifications.create(b.user_id, T.paymentFailed, { booking_id: b.id, reference: b.reference });
-      await this.mail.send({ to: b.user.email, ...emailTemplates.paymentFailed(this.mailData(b)) });
     });
   }
 

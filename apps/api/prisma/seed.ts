@@ -4,6 +4,7 @@
  */
 import { PrismaClient, Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import { demoPosts } from './demo-blog';
 import { demoPackages, toItinerary } from './demo-packages';
 
 const prisma = new PrismaClient();
@@ -72,6 +73,60 @@ async function seedDemo() {
     };
     await prisma.package.upsert({ where: { slug: pkg.slug }, update: data, create: data });
     console.log(`  ✓ package ${pkg.slug}`);
+  }
+
+  const author = await prisma.user.findFirstOrThrow({ where: { role: Role.super_admin } });
+  for (const [i, post] of demoPosts.entries()) {
+    const data = {
+      ...post,
+      author_id: author.id,
+      status: 'published' as const,
+      published_at: new Date(Date.now() - (i + 1) * 7 * 86_400_000),
+    };
+    await prisma.blogPost.upsert({ where: { slug: post.slug }, update: data, create: data });
+    console.log(`  ✓ blog ${post.slug}`);
+  }
+
+  await seedDemoReviews();
+}
+
+/** Clients, voyages terminés et avis approuvés (témoignages de la page d'accueil). */
+async function seedDemoReviews() {
+  const reviews = [
+    { email: 'yasmine.demo@example.com', first: 'Yasmine', last: 'Mansour', slug: 'circuit-grand-sud-tozeur-douz', rating: 5, comment: 'Une organisation impeccable du début à la fin. La nuit sous tente à Douz restera un souvenir inoubliable !' },
+    { email: 'mehdi.demo@example.com', first: 'Mehdi', last: 'Gharbi', slug: 'omra-ramadan-15-jours', rating: 5, comment: 'Encadrement religieux sérieux, hôtels vraiment proches du Haram. Je recommande CLS Travel les yeux fermés.' },
+    { email: 'claire.demo@example.com', first: 'Claire', last: 'Dubois', slug: 'sejour-djerba-all-inclusive', rating: 4, comment: 'Très bel hôtel et transferts ponctuels. L’excursion à Houmt Souk était le point fort du séjour.' },
+  ];
+  const password_hash = await bcrypt.hash(`Demo-${Date.now()}-${Math.random()}`, 10); // comptes non connectables
+  for (const r of reviews) {
+    const user = await prisma.user.upsert({
+      where: { email: r.email },
+      update: {},
+      create: { email: r.email, password_hash, first_name: r.first, last_name: r.last, is_verified: true },
+    });
+    const pkg = await prisma.package.findUniqueOrThrow({ where: { slug: r.slug } });
+    const existing = await prisma.booking.findFirst({ where: { user_id: user.id, package_id: pkg.id } });
+    if (existing) continue;
+
+    const departure = new Date(Date.UTC(new Date().getUTCFullYear(), 0, 15));
+    const [{ last_value }] = await prisma.$queryRaw<{ last_value: number }[]>`
+      INSERT INTO booking_sequences (year, last_value) VALUES (${departure.getUTCFullYear()}, 1)
+      ON CONFLICT (year) DO UPDATE SET last_value = booking_sequences.last_value + 1 RETURNING last_value`;
+    const booking = await prisma.booking.create({
+      data: {
+        reference: `CLS-${departure.getUTCFullYear()}-${String(last_value).padStart(5, '0')}`,
+        user_id: user.id,
+        package_id: pkg.id,
+        departure_date: departure,
+        return_date: new Date(departure.getTime() + (pkg.duration_days - 1) * 86_400_000),
+        participants: [{ nom: r.last, prenom: r.first, passport: 'DEMO0000', dob: '1990-01-01' }],
+        total_price: pkg.base_price,
+        paid_amount: pkg.base_price,
+        status: 'completed',
+      },
+    });
+    await prisma.review.create({ data: { booking_id: booking.id, rating: r.rating, comment: r.comment, is_approved: true } });
+    console.log(`  ✓ review ${r.email}`);
   }
 }
 

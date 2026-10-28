@@ -64,7 +64,7 @@ feat(ci-cd): github actions workflow — test + build + deploy
 | Base de données | PostgreSQL 16 |
 | Cache / Rate-limit | Redis 7 |
 | Auth | JWT access (15min) + refresh (7j) en HttpOnly cookie, haché en BDD |
-| Paiement | Stripe Elements — acompte 30% + solde |
+| Paiement | Aucun paiement en ligne pour l'instant (Stripe retiré, phase ultérieure) — règlement auprès du conseiller |
 | Emails | Resend (transactionnel) |
 | Storage | OVHcloud Object Storage (S3-compatible) |
 | Déploiement | Docker Compose + Nginx + Certbot Let's Encrypt |
@@ -84,7 +84,7 @@ cls-travel/
 │   │   │   ├── (client)/     # portail client authentifié
 │   │   │   └── (admin)/      # back-office admin
 │   │   ├── components/       # UI partagé
-│   │   ├── lib/              # api-client, stripe, hooks, utils
+│   │   ├── lib/              # api-client, hooks, utils
 │   │   └── i18n/             # dictionnaires FR/AR/EN
 │   └── api/              # NestJS backend
 │       └── src/
@@ -146,7 +146,7 @@ cls-travel/
 
 **payments** (transactions)
 - id (uuid), booking_id (FK → bookings)
-- stripe_payment_intent_id (varchar unique)
+- stripe_payment_intent_id (varchar unique) — colonne conservée en BDD, inutilisée tant que le paiement en ligne est différé
 - amount (numeric 10,3), currency (char 3 — TND/EUR/USD)
 - status: enum(pending, succeeded, failed, refunded)
 - payment_type: enum(deposit, balance, full), paid_at (timestamptz)
@@ -203,7 +203,7 @@ Implémentation : Guards NestJS + décorateur `@Roles()` sur chaque controller.
 2. **HTTPS** : Let's Encrypt via Certbot, HSTS `max-age=31536000`
 3. **Helmet.js** : CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
 4. **Rate limiting** : Redis + NestJS throttler — 100 req/min API publique, 10 req/min sur `/auth/login`
-5. **PCI-DSS** : jamais de numéro de carte en BDD — Stripe Elements tokenise côté client
+5. **PCI-DSS** : jamais de numéro de carte en BDD ni sur le site (aucun paiement en ligne actuellement)
 6. **Validation** : `class-validator` + `class-transformer` sur tous les DTOs NestJS
 7. **CORS** : origines autorisées `carthagoloisirs.com` et `www.carthagoloisirs.com` uniquement
 8. **Audit logs** : toute action sensible loguée (login, paiement, modif rôle, suppression)
@@ -251,7 +251,7 @@ Implémentation : Guards NestJS + décorateur `@Roles()` sur chaque controller.
 | users | GET /users/me, PATCH /users/me, GET /admin/users, PATCH /admin/users/:id/role |
 | packages | GET /packages, GET /packages/:slug, POST /admin/packages, PATCH /admin/packages/:id, DELETE /admin/packages/:id |
 | bookings | POST /bookings, GET /bookings/:id, GET /client/bookings, GET /admin/bookings, PATCH /admin/bookings/:id/status |
-| payments | POST /payments/intent, POST /payments/webhooks/stripe, GET /client/payments |
+| payments | — (module retiré : paiement en ligne différé ; la table `payments` est conservée) |
 | reviews | POST /reviews, GET /packages/:slug/reviews, PATCH /admin/reviews/:id/approve |
 | blog | GET /blog, GET /blog/:slug, POST /admin/blog, PATCH /admin/blog/:id |
 | notifications | GET /notifications, PATCH /notifications/:id/read |
@@ -278,11 +278,6 @@ JWT_ACCESS_SECRET=<random-64-chars>
 JWT_REFRESH_SECRET=<random-64-chars>
 JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=7d
-
-# Stripe
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_DEPOSIT_PERCENT=30
 
 # Resend (expéditeur : noreply@carthagoloisirs.com, constante MAIL_FROM)
 RESEND_API_KEY=re_...
@@ -330,7 +325,7 @@ Nginx route :
 ### Phase 2 — Données et logique métier (commits 5-10)
 5. NestJS : module packages (CRUD + slug + i18n)
 6. NestJS : module bookings (workflow + states + reference CLS-YYYY-XXXXX)
-7. NestJS : module payments (Stripe intent + webhook + deposit 30%)
+7. NestJS : module payments (Stripe intent + webhook + deposit 30%) — retiré depuis, paiement différé
 8. NestJS : module reviews + modération
 9. NestJS : module blog (Tiptap content)
 10. NestJS : module notifications + analytics
@@ -339,7 +334,7 @@ Nginx route :
 11. Next.js : landing page (hero + search + featured packages + testimonials)
 12. Next.js : catalogue voyages (filtres + pagination + cards)
 13. Next.js : fiche voyage détaillée (galerie + programme + CTA réservation)
-14. Next.js : tunnel réservation 3 étapes + Stripe Elements
+14. Next.js : tunnel réservation 3 étapes (voyageurs → récapitulatif → confirmation, sans paiement)
 
 ### Phase 4 — Portails (commits 15-17)
 15. Next.js : espace client (dashboard + réservations + paiements + docs)
@@ -371,8 +366,9 @@ pnpm build                                     # shared → api → web (standal
 - **Auth front** : access token en mémoire (`useAuth().request`), refresh via cookie HttpOnly `cls_rt` (path `/auth`).
 - **Événements** : les modules métier émettent des événements (`common/events`), le module
   notifications envoie in-app + Resend (`mail/mail.service.ts`). Ne pas appeler le mail directement depuis un service métier.
-- **Paiements** : montants calculés côté API en TND (`payments/payment-amounts.ts`), débités en
-  `STRIPE_CURRENCY` ; `payments.amount_tnd` est la valeur comptable.
+- **Paiements** : différés à une phase ultérieure (Stripe retiré). Une réservation valide est créée
+  directement `confirmed` (`INITIAL_BOOKING_STATUS` dans `bookings/bookings.service.ts`) ; le règlement
+  se fait auprès du conseiller. Les tables `payments` / `stripe_events` restent dans le schéma.
 - **PDF** : Puppeteer (`puppeteer-core`) + Chromium système (`CHROMIUM_PATH`).
 - **CI/CD** : `.github/workflows/deploy.yml` (tests → images ghcr.io → SSH → `prisma migrate deploy`
   → health check avec rollback). Secrets : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_SSH_KNOWN_HOSTS`.

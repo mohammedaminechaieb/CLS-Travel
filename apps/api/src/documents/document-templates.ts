@@ -78,7 +78,7 @@ export function invoiceHtml(b: DocBooking): string {
   const lines = paid
     .map(
       (p) =>
-        `<tr><td>${date(p.paid_at ?? p.created_at)}</td><td>${TYPE_LABEL[p.payment_type]}${p.status === 'refunded' ? ' (remboursé)' : ''}</td><td>${e(p.stripe_payment_intent_id.slice(-10))}</td><td class="right">${p.amount.toFixed(2)} ${e(p.currency)}</td><td class="right">${tnd(p.amount_tnd)}</td></tr>`,
+        `<tr><td>${date(p.paid_at ?? p.created_at)}</td><td>${TYPE_LABEL[p.payment_type]}${p.status === 'refunded' ? ' (remboursé)' : ''}</td><td>${e(p.id.slice(0, 8).toUpperCase())}</td><td class="right">${p.amount.toFixed(2)} ${e(p.currency)}</td><td class="right">${tnd(p.amount_tnd)}</td></tr>`,
     )
     .join('');
   const count = (b.participants as unknown as Participant[]).length;
@@ -96,11 +96,11 @@ export function invoiceHtml(b: DocBooking): string {
       <tr class="total"><td colspan="3">Total TTC</td><td class="right">${tnd(b.total_price)}</td></tr>
     </tbody></table>
     <h3>Règlements reçus</h3>
-    ${paid.length ? `<table><thead><tr><th>Date</th><th>Type</th><th>Transaction</th><th class="right">Débité</th><th class="right">Crédité</th></tr></thead><tbody>${lines}</tbody></table>` : '<p class="muted">Aucun règlement enregistré.</p>'}
+    ${paid.length ? `<table><thead><tr><th>Date</th><th>Type</th><th>N°</th><th class="right">Débité</th><th class="right">Crédité</th></tr></thead><tbody>${lines}</tbody></table>` : '<p class="muted">Aucun règlement enregistré.</p>'}
     <table><tbody>
       <tr><td>Total réglé</td><td class="right">${tnd(b.paid_amount)}</td></tr>
       <tr class="total"><td>Solde dû</td><td class="right">${tnd(b.total_price.sub(b.paid_amount))}</td></tr>
     </tbody></table>
-    <p class="muted">Prix exprimés en dinars tunisiens (TND), taxes incluses (régime de la marge des agences de voyage). Paiements par carte traités par Stripe.</p>`,
+    <p class="muted">Prix exprimés en dinars tunisiens (TND), taxes incluses (régime de la marge des agences de voyage). Règlement auprès de votre conseiller CLS Travel.</p>`,
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import { DEFAULT_DEPOSIT_PERCENT, type PackageDetail } from '@cls/shared';
-import { CalendarDays, Lock, MessageCircle, Users } from 'lucide-react';
+import type { PackageDetail } from '@cls/shared';
+import { CalendarDays, CircleCheck, MessageCircle, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useFormatter, useTranslations } from 'next-intl';
@@ -69,16 +69,12 @@ export function BookingSidebar({ pkg }: { pkg: Pick<PackageDetail, 'slug' | 'bas
               </dt>
               <dd className="font-semibold">{money(total)}</dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-text-muted">{t('deposit', { percent: DEFAULT_DEPOSIT_PERCENT })}</dt>
-              <dd className="font-semibold text-cta">{money((total * DEFAULT_DEPOSIT_PERCENT) / 100)}</dd>
-            </div>
           </dl>
           <Button type="submit" variant="cta" size="lg" className="w-full">
             {t('bookCta')}
           </Button>
           <p className="flex items-start gap-2 text-xs text-text-muted">
-            <Lock className="mt-0.5 size-3.5 shrink-0" aria-hidden /> {t('depositNote', { percent: DEFAULT_DEPOSIT_PERCENT })}
+            <CircleCheck className="mt-0.5 size-3.5 shrink-0 text-success" aria-hidden /> {t('noPaymentNote')}
           </p>
         </form>
         <Link href="/contact" className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-primary hover:underline">

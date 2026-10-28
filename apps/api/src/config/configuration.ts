@@ -19,13 +19,6 @@ export default () => ({
     accessExpiry: process.env.JWT_ACCESS_EXPIRY ?? '15m',
     refreshExpiry: process.env.JWT_REFRESH_EXPIRY ?? '7d',
   },
-  stripe: {
-    secretKey: process.env.STRIPE_SECRET_KEY ?? '',
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
-    depositPercent: parseInt(process.env.STRIPE_DEPOSIT_PERCENT ?? '30', 10),
-    currency: (process.env.STRIPE_CURRENCY ?? 'eur').toLowerCase(),
-    tndExchangeRate: parseFloat(process.env.STRIPE_TND_EXCHANGE_RATE ?? '0.30'),
-  },
   resend: {
     apiKey: process.env.RESEND_API_KEY ?? '',
   },

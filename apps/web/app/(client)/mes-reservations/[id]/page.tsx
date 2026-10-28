@@ -4,17 +4,14 @@ import type { BookingDetail } from '@cls/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, CalendarDays, FileText, MapPin, Receipt, UserRound } from 'lucide-react';
 import Link from 'next/link';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { PaymentStep } from '@/components/booking/payment-step';
 import { BookingMessages } from '@/components/client/booking-messages';
 import { ReviewForm } from '@/components/client/review-form';
 import { BookingStatusBadge } from '@/components/client/status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth/auth-provider';
@@ -29,20 +26,10 @@ export default function BookingDetailPage() {
   const format = useFormatter();
   const locale = useLocale();
   const router = useRouter();
-  const params = useSearchParams();
   const qc = useQueryClient();
   const { request, download } = useAuth();
-  const [payOpen, setPayOpen] = useState(false);
 
-  const processing = params.get('payment') === 'processing' || params.has('payment_intent');
-  const { data: b, isLoading, error } = useApiQuery<BookingDetail>(['booking', id], `/bookings/${id}`, undefined, {
-    // Après redirection Stripe, on interroge jusqu'à réception du webhook
-    refetchInterval: (q) => (processing && q.state.data?.payments.some((p) => p.status === 'pending') ? 3000 : false),
-  });
-
-  useEffect(() => {
-    if (processing) toast.info(td('paymentProcessing'));
-  }, [processing, td]);
+  const { data: b, isLoading, error } = useApiQuery<BookingDetail>(['booking', id], `/bookings/${id}`);
 
   const cancel = useMutation({
     mutationFn: () => request(`/client/bookings/${id}/cancel`, { method: 'PATCH' }),
@@ -68,7 +55,7 @@ export default function BookingDetailPage() {
   const total = Number(b.total_price);
   const paid = Number(b.paid_amount);
   const remaining = total - paid;
-  const payable = (b.status === 'pending' || b.status === 'confirmed') && remaining > 0;
+  const departed = new Date(b.departure_date) <= new Date();
   const travelled = b.status === 'completed' || (b.status === 'confirmed' && new Date(b.return_date) < new Date());
   const canReview = travelled && b.reviews.length === 0;
   const utc = { timeZone: 'UTC' } as const;
@@ -98,11 +85,6 @@ export default function BookingDetailPage() {
             <MapPin className="size-4" aria-hidden /> {tr(b.package.destination, 'name', locale)}, {b.package.destination.country}
           </p>
         </div>
-        {payable && (
-          <Button variant="cta" onClick={() => setPayOpen(true)}>
-            {td('payBalance')} · {money(remaining)}
-          </Button>
-        )}
       </header>
 
       <div className="grid gap-8 lg:grid-cols-3">
@@ -157,7 +139,6 @@ export default function BookingDetailPage() {
                       </Badge>
                       <span className="text-end font-semibold">
                         {money(p.amount_tnd)}
-                        {p.currency !== 'TND' && <span className="block text-xs font-normal text-text-muted">{p.amount} {p.currency}</span>}
                       </span>
                     </span>
                   </li>
@@ -200,7 +181,7 @@ export default function BookingDetailPage() {
             )}
           </section>
 
-          {b.status === 'pending' && paid === 0 && (
+          {(b.status === 'pending' || b.status === 'confirmed') && paid === 0 && !departed && (
             <Button
               variant="ghost"
               className="text-danger"
@@ -213,14 +194,6 @@ export default function BookingDetailPage() {
         </aside>
       </div>
 
-      <Dialog open={payOpen} onOpenChange={setPayOpen}>
-        <DialogContent className="max-w-xl">
-          <DialogHeader>
-            <DialogTitle>{td('payTitle')} — {b.reference}</DialogTitle>
-          </DialogHeader>
-          {payOpen && <PaymentStep bookingId={b.id} total={total} paid={paid} />}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

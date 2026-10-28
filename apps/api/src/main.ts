@@ -7,8 +7,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  // rawBody: nécessaire à la vérification de signature des webhooks Stripe
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
 
   app.set('trust proxy', 1);

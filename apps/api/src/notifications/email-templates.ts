@@ -26,13 +26,13 @@ ${row('Total', tnd(b.total))}${row('Déjà réglé', tnd(b.paid))}</table>`;
 
 export const emailTemplates = {
   bookingCreated: (b: BookingMailData) => ({
-    subject: `Réservation ${b.reference} enregistrée — CLS Travel`,
+    subject: `Réservation ${b.reference} confirmée — CLS Travel`,
     html: mailLayout(
-      'Votre réservation est enregistrée',
-      `<p>Bonjour ${escapeHtml(b.firstName)},</p><p>Nous avons bien reçu votre demande. Réglez l’acompte pour garantir vos places.</p>${summary(b)}`,
-      { label: 'Finaliser le paiement', url: b.url },
+      'Votre réservation est confirmée',
+      `<p>Bonjour ${escapeHtml(b.firstName)},</p><p>Merci pour votre réservation ! Votre conseiller vous contactera pour les modalités de règlement. Votre confirmation PDF est disponible dans votre espace client.</p>${summary(b)}`,
+      { label: 'Voir ma réservation', url: b.url },
     ),
-    text: `Réservation ${b.reference} enregistrée. ${b.url}`,
+    text: `Réservation ${b.reference} confirmée. ${b.url}`,
   }),
 
   bookingConfirmed: (b: BookingMailData) => ({
@@ -58,26 +58,6 @@ export const emailTemplates = {
       { label: status === 'cancelled' ? 'Contacter mon agent' : 'Donner mon avis', url: b.url },
     ),
     text: `${b.reference} : ${status}. ${b.url}`,
-  }),
-
-  paymentReceipt: (b: BookingMailData, amount: string, currency: string, type: string) => ({
-    subject: `Reçu de paiement ${b.reference} — CLS Travel`,
-    html: mailLayout(
-      'Paiement reçu',
-      `<p>Bonjour ${escapeHtml(b.firstName)},</p><p>Nous confirmons la réception de votre paiement (${escapeHtml(type)}) de <strong>${escapeHtml(amount)} ${escapeHtml(currency)}</strong>.</p>${summary(b)}<p>Votre facture est téléchargeable depuis votre espace client.</p>`,
-      { label: 'Télécharger ma facture', url: b.url },
-    ),
-    text: `Paiement de ${amount} ${currency} reçu pour ${b.reference}.`,
-  }),
-
-  paymentFailed: (b: BookingMailData) => ({
-    subject: `Échec du paiement ${b.reference} — CLS Travel`,
-    html: mailLayout(
-      'Votre paiement n’a pas abouti',
-      `<p>Bonjour ${escapeHtml(b.firstName)},</p><p>Le paiement de votre réservation ${escapeHtml(b.reference)} a échoué. Aucun montant n’a été débité. Vous pouvez réessayer à tout moment.</p>`,
-      { label: 'Réessayer le paiement', url: b.url },
-    ),
-    text: `Échec du paiement pour ${b.reference}. ${b.url}`,
   }),
 
   newMessage: (firstName: string, reference: string, url: string) => ({

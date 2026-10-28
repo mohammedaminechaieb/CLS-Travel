@@ -2,7 +2,7 @@ import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
-const STEPS = ['participants', 'summary', 'payment'] as const;
+const STEPS = ['participants', 'summary', 'confirmation'] as const;
 
 export function Stepper({ current }: { current: number }) {
   const t = useTranslations('booking');

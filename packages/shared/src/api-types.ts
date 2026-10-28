@@ -123,7 +123,6 @@ export interface Participant {
 export interface Payment {
   id: string;
   booking_id: string;
-  stripe_payment_intent_id: string;
   amount: DecimalString;
   currency: string;
   amount_tnd: DecimalString;
@@ -259,16 +258,6 @@ export interface PromoValidation {
   subtotal: DecimalString;
   discount: DecimalString;
   total: DecimalString;
-}
-
-export interface PaymentIntentResponse {
-  payment_id: string;
-  client_secret: string;
-  payment_type: PaymentType;
-  amount_tnd: DecimalString;
-  amount_charged: string;
-  currency: string;
-  deposit_percent: number;
 }
 
 export interface AppNotification {

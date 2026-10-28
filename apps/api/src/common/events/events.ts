@@ -1,4 +1,4 @@
-import type { BookingStatus, PaymentType } from '@prisma/client';
+import type { BookingStatus } from '@prisma/client';
 
 /** Événements de domaine émis via EventEmitter2 (consommés par les notifications). */
 export const EVENTS = {
@@ -6,8 +6,6 @@ export const EVENTS = {
   bookingStatusChanged: 'booking.status_changed',
   bookingAgentAssigned: 'booking.agent_assigned',
   bookingMessage: 'booking.message',
-  paymentSucceeded: 'payment.succeeded',
-  paymentFailed: 'payment.failed',
 } as const;
 
 export interface BookingCreatedEvent {
@@ -30,12 +28,4 @@ export interface BookingMessageEvent {
   bookingId: string;
   messageId: string;
   senderId: string;
-}
-
-export interface PaymentEvent {
-  bookingId: string;
-  paymentId: string;
-  amount: string;
-  currency: string;
-  type: PaymentType;
 }

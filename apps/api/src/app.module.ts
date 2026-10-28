@@ -9,8 +9,10 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import configuration from './config/configuration';
 import { validateEnv } from './config/env.validation';
+import { DestinationsModule } from './destinations/destinations.module';
 import { HealthController } from './health/health.controller';
 import { MailModule } from './mail/mail.module';
+import { PackagesModule } from './packages/packages.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { UsersModule } from './users/users.module';
@@ -37,6 +39,8 @@ import { UsersModule } from './users/users.module';
     MailModule,
     AuthModule,
     UsersModule,
+    DestinationsModule,
+    PackagesModule,
   ],
   controllers: [HealthController],
   providers: [

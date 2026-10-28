@@ -4,6 +4,7 @@
  */
 import { PrismaClient, Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import { demoPackages, toItinerary } from './demo-packages';
 
 const prisma = new PrismaClient();
 
@@ -54,6 +55,24 @@ async function main() {
     },
   });
   console.log(`  ✓ super_admin ${adminEmail}`);
+
+  if (process.env.SEED_DEMO === 'true') await seedDemo();
+}
+
+/** Données de démonstration : offres publiées (SEED_DEMO=true). */
+async function seedDemo() {
+  for (const { destination, gallery, days, ...pkg } of demoPackages) {
+    const dest = await prisma.destination.findFirstOrThrow({ where: { name_en: destination } });
+    const data = {
+      ...pkg,
+      destination_id: dest.id,
+      gallery_urls: gallery,
+      itinerary: toItinerary(days),
+      status: 'published' as const,
+    };
+    await prisma.package.upsert({ where: { slug: pkg.slug }, update: data, create: data });
+    console.log(`  ✓ package ${pkg.slug}`);
+  }
 }
 
 main()
